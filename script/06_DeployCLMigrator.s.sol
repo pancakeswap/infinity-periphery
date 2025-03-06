@@ -10,19 +10,18 @@ import {Create3Factory} from "pancake-create3-factory/src/Create3Factory.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
+ * Pre-req: foundry on stable (1.0) otherwise verify will fail: ref https://github.com/foundry-rs/foundry/issues/9698
+ *
  * Step 1: Deploy
  * forge script script/06_DeployCLMigrator.s.sol:DeployCLMigratorScript -vvv \
  *     --rpc-url $RPC_URL \
  *     --broadcast \
- *     --slow
- *
- * Step 2: Verify
- * forge verify-contract <address> src/pool-cl/CLMigrator.sol:CLMigrator --watch \
- *      --chain <chainId> --constructor-args $(cast abi-encode "constructor(address,address,address)" <weth> <clPositionManager> <permit2>)
+ *     --slow \
+ *     --verify
  */
 contract DeployCLMigratorScript is BaseScript {
     function getDeploymentSalt() public pure override returns (bytes32) {
-        return keccak256("INFINITY-PERIPHERY/CLMigrator/0.97");
+        return keccak256("INFINITY-PERIPHERY/CLMigrator/1.0.0");
     }
 
     function run() public {

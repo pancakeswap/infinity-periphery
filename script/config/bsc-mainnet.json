@@ -1,0 +1,23 @@
+{
+  "create3Factory": "0x38Ab3f2CE00973A51d3A2A04d634C9bcbf20e4e1",
+  "owner": "0x42571B8414c68B63A2729146CE93F23639d25399",
+  "permit2": "0x31c2F6fcFf4F8759b3Bd5Bf0e1084A055615c768",
+  "weth": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+  "vault": "0x238a358808379702088667322f80aC48bAd5e6c4",
+  "clPoolManager": "0xa0FfB9c1CE1Fe56963B0321B32E7A0302114058b",
+  "binPoolManager": "0xC697d2898e0D09264376196696c51D7aBbbAA4a9",
+  "clPositionDescriptorTokenUri": "https://pancakeswap.finance/bsc/token/",
+  "clPositionDescriptor": "0xF6198656CDD856073f82d10661b018A1a9d84E84",
+  "clPositionManagerUnsubscribeGasLimit": 200000,
+  "clPositionManager": "0x55f4c8abA71A1e923edC303eb4fEfF14608cC226",
+  "binPositionManager": "0x3D311D6283Dd8aB90bb0031835C8e606349e2850",
+  "clQuoter": "0xd0737C9762912dD34c3271197E362Aa736Df0926",
+  "binQuoter": "0xC631f4B0Fc2Dd68AD45f74B2942628db117dD359",
+  "clMigrator": "0xF1A6B9b2b4Aa5623a490E2CF2E23B265334478e1",
+  "binMigrator": "0x0bcf19dFB2B776d8c8F9fA79A9d57c00fbA9557d",
+  "factoryV3": "0x0BFbCF9fa4f9C56B0F40a671Ad40E0805A091865",
+  "factoryV2": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
+  "factoryStable": "0x25a55f9f2279A54951133D503490342b50E5cd15",
+  "mixedQuoter": "0x2dCbF7B985c8C5C931818e4E107bAe8aaC8dAB7C",
+  "clTickLens": "0x8BcF30285413F25032fb983C2bF4deFe29a33f3a"
+}

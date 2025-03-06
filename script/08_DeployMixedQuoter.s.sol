@@ -9,19 +9,18 @@ import {MixedQuoter} from "../src/MixedQuoter.sol";
 import {Create3Factory} from "pancake-create3-factory/src/Create3Factory.sol";
 
 /**
+ * Pre-req: foundry on stable (1.0) otherwise verify will fail: ref https://github.com/foundry-rs/foundry/issues/9698
+ *
  * Step 1: Deploy
  * forge script script/08_DeployMixedQuoter.s.sol:DeployMixedQuoterScript -vvv \
  *     --rpc-url $RPC_URL \
  *     --broadcast \
- *     --slow
- *
- * Step 2: Verify
- * forge verify-contract <address> MixedQuoter --watch \
- *      --chain <chainId> --constructor-args $(cast abi-encode "constructor(address,address,address,address,address,address)" <factoryV3> <factoryV2> <factoryStable> <weth> <clQuoter> <binQuoter>)
+ *     --slow \
+ *     --verify
  */
 contract DeployMixedQuoterScript is BaseScript {
     function getDeploymentSalt() public pure override returns (bytes32) {
-        return keccak256("INFINITY-PERIPHERY/MixedQuoter/0.97");
+        return keccak256("INFINITY-PERIPHERY/MixedQuoter/1.0.0");
     }
 
     function run() public {
