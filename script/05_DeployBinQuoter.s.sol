@@ -7,19 +7,18 @@ import {BinQuoter} from "../src/pool-bin/lens/BinQuoter.sol";
 import {Create3Factory} from "pancake-create3-factory/src/Create3Factory.sol";
 
 /**
+ * Pre-req: foundry on stable (1.0) otherwise verify will fail: ref https://github.com/foundry-rs/foundry/issues/9698
+ *
  * Step 1: Deploy
  * forge script script/05_DeployBinQuoter.s.sol:DeployBinQuoterScript -vvv \
  *     --rpc-url $RPC_URL \
  *     --broadcast \
- *     --slow
- *
- * Step 2: Verify
- * forge verify-contract <address> BinQuoter --watch \
- *      --chain <chainId> --constructor-args $(cast abi-encode "constructor(address)" <binPoolManager>)
+ *     --slow \
+ *     --verify
  */
 contract DeployBinQuoterScript is BaseScript {
     function getDeploymentSalt() public pure override returns (bytes32) {
-        return keccak256("INFINITY-PERIPHERY/BinQuoter/0.97");
+        return keccak256("INFINITY-PERIPHERY/BinQuoter/1.0.0");
     }
 
     function run() public {

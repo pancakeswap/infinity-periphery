@@ -13,19 +13,18 @@ import {Create3Factory} from "pancake-create3-factory/src/Create3Factory.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
+ * Pre-req: foundry on stable (1.0) otherwise verify will fail: ref https://github.com/foundry-rs/foundry/issues/9698
+ *
  * Step 1: Deploy
  * forge script script/02_DeployCLPositionManager.s.sol:DeployCLPositionManagerScript -vvv \
  *     --rpc-url $RPC_URL \
  *     --broadcast \
- *     --slow
- *
- * Step 2: Verify
- * forge verify-contract <address> CLPositionManager --watch \
- *      --chain <chainId> --constructor-args $(cast abi-encode "constructor(address,address,address,uint256,address,address)" <vault> <clPoolManager> <permit2> <unsubscribeGasLimit> <clPositionDescriptor> <weth9>)
+ *     --slow \
+ *     --verify
  */
 contract DeployCLPositionManagerScript is BaseScript {
     function getDeploymentSalt() public pure override returns (bytes32) {
-        return keccak256("INFINITY-PERIPHERY/CLPositionManager/0.97");
+        return keccak256("INFINITY-PERIPHERY/CLPositionManager/1.0.0");
     }
 
     function run() public {

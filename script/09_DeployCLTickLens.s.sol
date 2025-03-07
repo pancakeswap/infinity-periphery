@@ -8,19 +8,18 @@ import {TickLens} from "../src/pool-cl/lens/TickLens.sol";
 import {Create3Factory} from "pancake-create3-factory/src/Create3Factory.sol";
 
 /**
+ * Pre-req: foundry on stable (1.0) otherwise verify will fail: ref https://github.com/foundry-rs/foundry/issues/9698
+ *
  * Step 1: Deploy
  * forge script script/09_DeployCLTickLens.s.sol:DeployCLTickLensScript -vvv \
  *     --rpc-url $RPC_URL \
  *     --broadcast \
- *     --slow
- *
- * Step 2: Verify
- * forge verify-contract <address> TickLens --watch \
- *      --chain <chainId> --constructor-args $(cast abi-encode "constructor(address)" <clPoolManager>)
+ *     --slow \
+ *     --verify
  */
 contract DeployCLTickLensScript is BaseScript {
     function getDeploymentSalt() public pure override returns (bytes32) {
-        return keccak256("INFINITY-PERIPHERY/TickLens/0.97");
+        return keccak256("INFINITY-PERIPHERY/TickLens/1.0.0");
     }
 
     function run() public {

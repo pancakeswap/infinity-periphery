@@ -7,19 +7,18 @@ import {CLQuoter} from "../src/pool-cl/lens/CLQuoter.sol";
 import {Create3Factory} from "pancake-create3-factory/src/Create3Factory.sol";
 
 /**
+ * Pre-req: foundry on stable (1.0) otherwise verify will fail: ref https://github.com/foundry-rs/foundry/issues/9698
+ *
  * Step 1: Deploy
  * forge script script/04_DeployCLQuoter.s.sol:DeployCLQuoterScript -vvv \
  *     --rpc-url $RPC_URL \
  *     --broadcast \
- *     --slow
- *
- * Step 2: Verify
- * forge verify-contract <address> CLQuoter --watch \
- *      --chain <chainId> --constructor-args $(cast abi-encode "constructor(address)" <clPoolManager>)
+ *     --slow \
+ *     --verify
  */
 contract DeployCLQuoterScript is BaseScript {
     function getDeploymentSalt() public pure override returns (bytes32) {
-        return keccak256("INFINITY-PERIPHERY/CLQuoter/0.97");
+        return keccak256("INFINITY-PERIPHERY/CLQuoter/1.0.0");
     }
 
     function run() public {

@@ -12,19 +12,18 @@ import {Create3Factory} from "pancake-create3-factory/src/Create3Factory.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
+ * Pre-req: foundry on stable (1.0) otherwise verify will fail: ref https://github.com/foundry-rs/foundry/issues/9698
+ *
  * Step 1: Deploy
  * forge script script/03_DeployBinPositionManager.s.sol:DeployBinPositionManagerScript -vvv \
  *     --rpc-url $RPC_URL \
  *     --broadcast \
- *     --slow
- *
- * Step 2: Verify
- * forge verify-contract <address> BinPositionManager --watch \
- *      --chain <chainId> --constructor-args $(cast abi-encode "constructor(address,address,address,address)" <vault> <binPoolManager> <permit2> <weth9>)
+ *     --slow \
+ *     --verify
  */
 contract DeployBinPositionManagerScript is BaseScript {
     function getDeploymentSalt() public pure override returns (bytes32) {
-        return keccak256("INFINITY-PERIPHERY/BinPositionManager/0.97");
+        return keccak256("INFINITY-PERIPHERY/BinPositionManager/1.0.0");
     }
 
     function run() public {
