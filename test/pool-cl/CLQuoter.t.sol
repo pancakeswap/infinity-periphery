@@ -2,6 +2,7 @@
 pragma solidity ^0.8.24;
 
 import {Test} from "forge-std/Test.sol";
+import {console} from "forge-std/console.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IQuoter} from "../../src/interfaces/IQuoter.sol";
 import {ICLQuoter} from "../../src/pool-cl/interfaces/ICLQuoter.sol";
@@ -87,7 +88,7 @@ contract CLQuoterTest is Test, Deployers {
         uint256 amountIn = 10000;
         uint256 expectedAmountOut = 9871;
 
-        (uint256 _amountOut, uint256 _gasEstimate) = quoter.quoteExactInputSingle(
+        (uint256 _amountOut, uint256 _gasEstimate, uint256 sqrtPrice, uint256 sqrtNewPrice) = quoter.quoteExactInputSingle(
             IQuoter.QuoteExactSingleParams({
                 poolKey: key02,
                 zeroForOne: true,
@@ -95,6 +96,9 @@ contract CLQuoterTest is Test, Deployers {
                 hookData: ZERO_BYTES
             })
         );
+
+        console.log("sqrtPrice: %s", sqrtPrice);
+        console.log("sqrtNewPrice: %s", sqrtNewPrice);
 
         assertEq(_amountOut, expectedAmountOut);
         assertGt(_gasEstimate, 140000);
@@ -115,7 +119,7 @@ contract CLQuoterTest is Test, Deployers {
         uint256 amountIn = 10000;
         uint256 expectedAmountOut = 9871;
 
-        (uint256 _amountOut, uint256 _gasEstimate) = quoter.quoteExactInputSingle(
+        (uint256 _amountOut, uint256 _gasEstimate, uint256 sqrtPrice, uint256 sqrtNewPrice) = quoter.quoteExactInputSingle(
             IQuoter.QuoteExactSingleParams({
                 poolKey: key02,
                 zeroForOne: false,
@@ -123,6 +127,9 @@ contract CLQuoterTest is Test, Deployers {
                 hookData: ZERO_BYTES
             })
         );
+
+        console.log("sqrtPrice: %s", sqrtPrice);
+        console.log("sqrtNewPrice: %s", sqrtNewPrice);
 
         assertEq(_amountOut, expectedAmountOut);
         assertGt(_gasEstimate, 140000);
@@ -141,7 +148,7 @@ contract CLQuoterTest is Test, Deployers {
         tokenPath.push(token2);
         ICLQuoter.QuoteExactParams memory params = getExactInputParams(tokenPath, 10000);
 
-        (uint256 _amountOut, uint256 _gasEstimate) = quoter.quoteExactInput(params);
+        (uint256 _amountOut, uint256 _gasEstimate,,) = quoter.quoteExactInput(params);
 
         assertEq(_amountOut, 9871);
         assertGt(_gasEstimate, 140000);
@@ -156,7 +163,7 @@ contract CLQuoterTest is Test, Deployers {
         // -120 is an initialized tick for this pool. We check that we don't count it.
         ICLQuoter.QuoteExactParams memory params = getExactInputParams(tokenPath, 6200);
 
-        (uint256 _amountOut, uint256 _gasEstimate) = quoter.quoteExactInput(params);
+        (uint256 _amountOut, uint256 _gasEstimate,,) = quoter.quoteExactInput(params);
 
         assertEq(_amountOut, 6143);
         assertGt(_gasEstimate, 110000);
@@ -171,7 +178,7 @@ contract CLQuoterTest is Test, Deployers {
         // -60 is an initialized tick for this pool. We check that we don't count it.
         ICLQuoter.QuoteExactParams memory params = getExactInputParams(tokenPath, 4000);
 
-        (uint256 _amountOut, uint256 _gasEstimate) = quoter.quoteExactInput(params);
+        (uint256 _amountOut, uint256 _gasEstimate,,) = quoter.quoteExactInput(params);
 
         assertEq(_amountOut, 3971);
         assertGt(_gasEstimate, 110000);
@@ -183,7 +190,7 @@ contract CLQuoterTest is Test, Deployers {
         tokenPath.push(token2);
         ICLQuoter.QuoteExactParams memory params = getExactInputParams(tokenPath, 10);
 
-        (uint256 _amountOut, uint256 _gasEstimate) = quoter.quoteExactInput(params);
+        (uint256 _amountOut, uint256 _gasEstimate,,) = quoter.quoteExactInput(params);
 
         assertEq(_amountOut, 8);
         assertGt(_gasEstimate, 80000);
@@ -196,7 +203,7 @@ contract CLQuoterTest is Test, Deployers {
         tokenPath.push(token2);
         ICLQuoter.QuoteExactParams memory params = getExactInputParams(tokenPath, 10);
 
-        (uint256 _amountOut, uint256 _gasEstimate) = quoter.quoteExactInput(params);
+        (uint256 _amountOut, uint256 _gasEstimate,,) = quoter.quoteExactInput(params);
 
         assertEq(_amountOut, 8);
         assertGt(_gasEstimate, 90000);
@@ -208,7 +215,7 @@ contract CLQuoterTest is Test, Deployers {
         tokenPath.push(token0);
         ICLQuoter.QuoteExactParams memory params = getExactInputParams(tokenPath, 10000);
 
-        (uint256 _amountOut, uint256 _gasEstimate) = quoter.quoteExactInput(params);
+        (uint256 _amountOut, uint256 _gasEstimate,,) = quoter.quoteExactInput(params);
 
         assertEq(_amountOut, 9871);
         assertGt(_gasEstimate, 140000);
@@ -223,7 +230,7 @@ contract CLQuoterTest is Test, Deployers {
         // 120 is an initialized tick for this pool. We check that we don't count it.
         ICLQuoter.QuoteExactParams memory params = getExactInputParams(tokenPath, 6250);
 
-        (uint256 _amountOut, uint256 _gasEstimate) = quoter.quoteExactInput(params);
+        (uint256 _amountOut, uint256 _gasEstimate,,) = quoter.quoteExactInput(params);
 
         assertEq(_amountOut, 6190);
         assertGt(_gasEstimate, 140000);
@@ -236,7 +243,7 @@ contract CLQuoterTest is Test, Deployers {
         tokenPath.push(token0);
         ICLQuoter.QuoteExactParams memory params = getExactInputParams(tokenPath, 200);
 
-        (uint256 _amountOut, uint256 _gasEstimate) = quoter.quoteExactInput(params);
+        (uint256 _amountOut, uint256 _gasEstimate,,) = quoter.quoteExactInput(params);
 
         assertEq(_amountOut, 198);
         assertGt(_gasEstimate, 70000);
@@ -249,7 +256,7 @@ contract CLQuoterTest is Test, Deployers {
         tokenPath.push(token0);
         ICLQuoter.QuoteExactParams memory params = getExactInputParams(tokenPath, 103);
 
-        (uint256 _amountOut, uint256 _gasEstimate) = quoter.quoteExactInput(params);
+        (uint256 _amountOut, uint256 _gasEstimate,,) = quoter.quoteExactInput(params);
 
         assertEq(_amountOut, 101);
         assertGt(_gasEstimate, 70000);
@@ -261,7 +268,7 @@ contract CLQuoterTest is Test, Deployers {
         tokenPath.push(token1);
         ICLQuoter.QuoteExactParams memory params = getExactInputParams(tokenPath, 10000);
 
-        (uint256 _amountOut, uint256 _gasEstimate) = quoter.quoteExactInput(params);
+        (uint256 _amountOut, uint256 _gasEstimate,,) = quoter.quoteExactInput(params);
 
         assertEq(_amountOut, 9871);
         assertGt(_gasEstimate, 70000);
@@ -274,7 +281,7 @@ contract CLQuoterTest is Test, Deployers {
         tokenPath.push(token1);
         ICLQuoter.QuoteExactParams memory params = getExactInputParams(tokenPath, 10000);
 
-        (uint256 _amountOut, uint256 _gasEstimate) = quoter.quoteExactInput(params);
+        (uint256 _amountOut, uint256 _gasEstimate,,) = quoter.quoteExactInput(params);
 
         assertEq(_amountOut, 9745);
         assertGt(_gasEstimate, 200000);
@@ -303,7 +310,7 @@ contract CLQuoterTest is Test, Deployers {
         tokenPath.push(token2);
         ICLQuoter.QuoteExactParams memory params = getExactOutputParams(tokenPath, 15000);
 
-        (uint256 _amountIn, uint256 _gasEstimate) = quoter.quoteExactOutput(params);
+        (uint256 _amountIn, uint256 _gasEstimate,,) = quoter.quoteExactOutput(params);
 
         assertEq(_amountIn, 15273);
         assertGt(_gasEstimate, 140000);
@@ -316,7 +323,7 @@ contract CLQuoterTest is Test, Deployers {
 
         ICLQuoter.QuoteExactParams memory params = getExactOutputParams(tokenPath, 6143);
 
-        (uint256 _amountIn, uint256 _gasEstimate) = quoter.quoteExactOutput(params);
+        (uint256 _amountIn, uint256 _gasEstimate,,) = quoter.quoteExactOutput(params);
 
         assertEq(_amountIn, 6200);
         assertGt(_gasEstimate, 110000);
@@ -329,7 +336,7 @@ contract CLQuoterTest is Test, Deployers {
 
         ICLQuoter.QuoteExactParams memory params = getExactOutputParams(tokenPath, 4000);
 
-        (uint256 _amountIn, uint256 _gasEstimate) = quoter.quoteExactOutput(params);
+        (uint256 _amountIn, uint256 _gasEstimate,,) = quoter.quoteExactOutput(params);
 
         assertEq(_amountIn, 4029);
         assertGt(_gasEstimate, 110000);
@@ -343,7 +350,7 @@ contract CLQuoterTest is Test, Deployers {
 
         ICLQuoter.QuoteExactParams memory params = getExactOutputParams(tokenPath, 100);
 
-        (uint256 _amountIn, uint256 _gasEstimate) = quoter.quoteExactOutput(params);
+        (uint256 _amountIn, uint256 _gasEstimate,,) = quoter.quoteExactOutput(params);
 
         assertEq(_amountIn, 102);
         assertGt(_gasEstimate, 90000);
@@ -356,7 +363,7 @@ contract CLQuoterTest is Test, Deployers {
 
         ICLQuoter.QuoteExactParams memory params = getExactOutputParams(tokenPath, 10);
 
-        (uint256 _amountIn, uint256 _gasEstimate) = quoter.quoteExactOutput(params);
+        (uint256 _amountIn, uint256 _gasEstimate,,) = quoter.quoteExactOutput(params);
 
         assertEq(_amountIn, 12);
         assertGt(_gasEstimate, 80000);
@@ -368,7 +375,7 @@ contract CLQuoterTest is Test, Deployers {
         tokenPath.push(token0);
         ICLQuoter.QuoteExactParams memory params = getExactOutputParams(tokenPath, 15000);
 
-        (uint256 _amountIn, uint256 _gasEstimate) = quoter.quoteExactOutput(params);
+        (uint256 _amountIn, uint256 _gasEstimate,,) = quoter.quoteExactOutput(params);
 
         assertEq(_amountIn, 15273);
         assertGt(_gasEstimate, 140000);
@@ -381,7 +388,7 @@ contract CLQuoterTest is Test, Deployers {
 
         ICLQuoter.QuoteExactParams memory params = getExactOutputParams(tokenPath, 6223);
 
-        (uint256 _amountIn, uint256 _gasEstimate) = quoter.quoteExactOutput(params);
+        (uint256 _amountIn, uint256 _gasEstimate,,) = quoter.quoteExactOutput(params);
 
         assertEq(_amountIn, 6283);
         assertGt(_gasEstimate, 140000);
@@ -393,7 +400,7 @@ contract CLQuoterTest is Test, Deployers {
         tokenPath.push(token0);
 
         ICLQuoter.QuoteExactParams memory params = getExactOutputParams(tokenPath, 6000);
-        (uint256 _amountIn, uint256 _gasEstimate) = quoter.quoteExactOutput(params);
+        (uint256 _amountIn, uint256 _gasEstimate,,) = quoter.quoteExactOutput(params);
 
         assertEq(_amountIn, 6055);
         assertGt(_gasEstimate, 110000);
@@ -405,7 +412,7 @@ contract CLQuoterTest is Test, Deployers {
         tokenPath.push(token1);
 
         ICLQuoter.QuoteExactParams memory params = getExactOutputParams(tokenPath, 9871);
-        (uint256 _amountIn, uint256 _gasEstimate) = quoter.quoteExactOutput(params);
+        (uint256 _amountIn, uint256 _gasEstimate,,) = quoter.quoteExactOutput(params);
 
         assertEq(_amountIn, 10000);
         assertGt(_gasEstimate, 70000);
@@ -418,7 +425,7 @@ contract CLQuoterTest is Test, Deployers {
         tokenPath.push(token1);
 
         ICLQuoter.QuoteExactParams memory params = getExactOutputParams(tokenPath, 9745);
-        (uint256 _amountIn, uint256 _gasEstimate) = quoter.quoteExactOutput(params);
+        (uint256 _amountIn, uint256 _gasEstimate,,) = quoter.quoteExactOutput(params);
 
         assertEq(_amountIn, 10000);
         assertGt(_gasEstimate, 205000);

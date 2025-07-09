@@ -333,11 +333,11 @@ contract MixedQuoter is IMixedQuoter, IPancakeV3SwapCallback, Multicall {
                     }
                     swapList[swapHistoryListLength] = swapParams;
 
-                    (amountIn, gasEstimateForCurAction) = clQuoter.quoteExactInputSingleList(swapList);
+                    (amountIn, gasEstimateForCurAction,,) = clQuoter.quoteExactInputSingleList(swapList);
                     swapListBytes = abi.encode(swapList);
                     MixedQuoterRecorder.setInfiPoolSwapList(poolHash, swapListBytes);
                 } else {
-                    (amountIn, gasEstimateForCurAction) = clQuoter.quoteExactInputSingle(swapParams);
+                    (amountIn, gasEstimateForCurAction,,) = clQuoter.quoteExactInputSingle(swapParams);
                 }
             } else if (action == MixedQuoterActions.INFI_BIN_EXACT_INPUT_SINGLE) {
                 QuoteMixedInfiExactInputSingleParams memory binParams =

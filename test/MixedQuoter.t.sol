@@ -844,7 +844,7 @@ contract MixedQuoterTest is
 
         assertEq(amountOut, 996668773744192346);
 
-        (uint256 _amountOut, uint256 _gasEstimate) = clQuoter.quoteExactInputSingle(
+        (uint256 _amountOut, uint256 _gasEstimate,,) = clQuoter.quoteExactInputSingle(
             IQuoter.QuoteExactSingleParams({
                 poolKey: poolKey,
                 zeroForOne: true,
@@ -1034,7 +1034,7 @@ contract MixedQuoterTest is
 
         assertEq(amountOut, 996668773744192346);
 
-        (uint256 _amountOut, uint256 _gasEstimate) = clQuoter.quoteExactInputSingle(
+        (uint256 _amountOut, uint256 _gasEstimate,,) = clQuoter.quoteExactInputSingle(
             IQuoter.QuoteExactSingleParams({
                 poolKey: poolKey,
                 zeroForOne: false,
@@ -1070,7 +1070,7 @@ contract MixedQuoterTest is
 
         assertEq(amountOut, 996006981039903216);
 
-        (uint256 _amountOut, uint256 _gasEstimate) = clQuoter.quoteExactInputSingle(
+        (uint256 _amountOut, uint256 _gasEstimate,,) = clQuoter.quoteExactInputSingle(
             IQuoter.QuoteExactSingleParams({
                 poolKey: poolKeyWithWETH,
                 zeroForOne: true,

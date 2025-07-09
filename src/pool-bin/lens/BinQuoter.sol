@@ -36,7 +36,7 @@ contract BinQuoter is BaseInfinityQuoter, IBinQuoter {
         catch (bytes memory reason) {
             gasEstimate = gasBefore - gasleft();
             // Extract the quote from QuoteSwap error, or throw if the quote failed
-            amountOut = reason.parseQuoteAmount();
+            (amountOut,) = reason.parseQuoteData();
         }
     }
 
@@ -50,7 +50,7 @@ contract BinQuoter is BaseInfinityQuoter, IBinQuoter {
         catch (bytes memory reason) {
             gasEstimate = gasBefore - gasleft();
             // Extract the quote from QuoteSwap error, or throw if the quote failed
-            amountIn = reason.parseQuoteAmount();
+            (amountIn,) = reason.parseQuoteData();
         }
     }
 
@@ -65,7 +65,7 @@ contract BinQuoter is BaseInfinityQuoter, IBinQuoter {
         catch (bytes memory reason) {
             gasEstimate = gasBefore - gasleft();
             // Extract the quote from QuoteSwap error, or throw if the quote failed
-            amountOut = reason.parseQuoteAmount();
+            (amountOut,) = reason.parseQuoteData();
         }
     }
 
@@ -80,7 +80,7 @@ contract BinQuoter is BaseInfinityQuoter, IBinQuoter {
         catch (bytes memory reason) {
             gasEstimate = gasBefore - gasleft();
             // Extract the quote from QuoteSwap error, or throw if the quote failed
-            amountIn = reason.parseQuoteAmount();
+            (amountIn,) = reason.parseQuoteData();
         }
     }
 
@@ -95,7 +95,7 @@ contract BinQuoter is BaseInfinityQuoter, IBinQuoter {
         catch (bytes memory reason) {
             gasEstimate = gasBefore - gasleft();
             // Extract the quote from QuoteSwap error, or throw if the quote failed
-            amountIn = reason.parseQuoteAmount();
+            (amountIn,) = reason.parseQuoteData();
         }
     }
 
@@ -117,7 +117,7 @@ contract BinQuoter is BaseInfinityQuoter, IBinQuoter {
             inputCurrency = pathKey.intermediateCurrency;
         }
         // amountIn after the loop actually holds the amountOut of the trade
-        amountIn.revertQuote();
+        amountIn.revertQuote(0);
     }
 
     /// @dev quote an ExactInput swap on a pool, then revert with the result
@@ -127,7 +127,7 @@ contract BinQuoter is BaseInfinityQuoter, IBinQuoter {
 
         // the output delta of a swap is positive
         uint256 amountOut = params.zeroForOne ? uint128(swapDelta.amount1()) : uint128(swapDelta.amount0());
-        amountOut.revertQuote();
+        amountOut.revertQuote(0);
     }
 
     /// @dev quote ExactInput swap list on a pool, then revert with the result of last swap
@@ -148,7 +148,7 @@ contract BinQuoter is BaseInfinityQuoter, IBinQuoter {
                 amountOut = params.zeroForOne ? uint128(swapDelta.amount1()) : uint128(swapDelta.amount0());
             }
         }
-        amountOut.revertQuote();
+        amountOut.revertQuote(0);
     }
 
     /// @dev quote an ExactOutput swap along a path of tokens, then revert with the result
@@ -169,7 +169,7 @@ contract BinQuoter is BaseInfinityQuoter, IBinQuoter {
             outputCurrency = pathKey.intermediateCurrency;
         }
         // amountOut after the loop exits actually holds the amountIn of the trade
-        amountOut.revertQuote();
+        amountOut.revertQuote(0);
     }
 
     /// @dev quote an ExactOutput swap on a pool, then revert with the result
@@ -179,7 +179,7 @@ contract BinQuoter is BaseInfinityQuoter, IBinQuoter {
 
         // the input delta of a swap is negative so we must flip it
         uint256 amountIn = params.zeroForOne ? uint128(-swapDelta.amount0()) : uint128(-swapDelta.amount1());
-        amountIn.revertQuote();
+        amountIn.revertQuote(0);
     }
 
     /// @dev Execute a swap and return the balance delta

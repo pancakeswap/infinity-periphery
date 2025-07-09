@@ -6,7 +6,7 @@ import {TickMath} from "infinity-core/src/pool-cl/libraries/TickMath.sol";
 import {ICLPoolManager} from "infinity-core/src/pool-cl/interfaces/ICLPoolManager.sol";
 import {BalanceDelta} from "infinity-core/src/types/BalanceDelta.sol";
 import {PoolKey} from "infinity-core/src/types/PoolKey.sol";
-import {PoolId} from "infinity-core/src/types/PoolId.sol";
+import {PoolId, PoolIdLibrary} from "infinity-core/src/types/PoolId.sol";
 import {ICLQuoter} from "../interfaces/ICLQuoter.sol";
 import {PoolTicksCounter} from "../libraries/PoolTicksCounter.sol";
 import {PathKey, PathKeyLibrary} from "../../libraries/PathKey.sol";
@@ -16,6 +16,7 @@ import {Currency} from "infinity-core/src/types/Currency.sol";
 
 contract CLQuoter is ICLQuoter, BaseInfinityQuoter {
     using QuoterRevert for *;
+    using PoolIdLibrary for PoolKey;
 
     ICLPoolManager public immutable poolManager;
 
@@ -26,70 +27,72 @@ contract CLQuoter is ICLQuoter, BaseInfinityQuoter {
     /// @inheritdoc ICLQuoter
     function quoteExactInputSingle(QuoteExactSingleParams memory params)
         external
-        returns (uint256 amountOut, uint256 gasEstimate)
+        returns (uint256 amountOut, uint256 gasEstimate, uint256 sqrtPrice, uint256 newSqrtPrice)
     {
+        PoolId poolId = params.poolKey.toId();
+        (sqrtPrice,,,) = poolManager.getSlot0(poolId);
         uint256 gasBefore = gasleft();
         try vault.lock(abi.encodeCall(this._quoteExactInputSingle, (params))) {}
         catch (bytes memory reason) {
             gasEstimate = gasBefore - gasleft();
             // Extract the quote from QuoteSwap error, or throw if the quote failed
-            amountOut = reason.parseQuoteAmount();
+            (amountOut, newSqrtPrice) = reason.parseQuoteData();
         }
     }
 
     /// @inheritdoc ICLQuoter
     function quoteExactInputSingleList(QuoteExactSingleParams[] memory params)
         external
-        returns (uint256 amountIn, uint256 gasEstimate)
+        returns (uint256 amountIn, uint256 gasEstimate, uint256 sqrtPrice, uint256 newSqrtPrice)
     {
         uint256 gasBefore = gasleft();
         try vault.lock(abi.encodeCall(this._quoteExactInputSingleList, (params))) {}
         catch (bytes memory reason) {
             gasEstimate = gasBefore - gasleft();
             // Extract the quote from QuoteSwap error, or throw if the quote failed
-            amountIn = reason.parseQuoteAmount();
+            (amountIn, newSqrtPrice) = reason.parseQuoteData();
         }
     }
 
     /// @inheritdoc ICLQuoter
     function quoteExactInput(QuoteExactParams memory params)
         external
-        returns (uint256 amountOut, uint256 gasEstimate)
+        returns (uint256 amountOut, uint256 gasEstimate, uint256 sqrtPrice, uint256 newSqrtPrice)
     {
         uint256 gasBefore = gasleft();
         try vault.lock(abi.encodeCall(this._quoteExactInput, (params))) {}
         catch (bytes memory reason) {
             gasEstimate = gasBefore - gasleft();
             // Extract the quote from QuoteSwap error, or throw if the quote failed
-            amountOut = reason.parseQuoteAmount();
+            (amountOut, newSqrtPrice) = reason.parseQuoteData();
         }
     }
 
     /// @inheritdoc ICLQuoter
     function quoteExactOutputSingle(QuoteExactSingleParams memory params)
         external
-        returns (uint256 amountIn, uint256 gasEstimate)
+        returns (uint256 amountIn, uint256 gasEstimate, uint256 sqrtPrice, uint256 newSqrtPrice)
     {
         uint256 gasBefore = gasleft();
         try vault.lock(abi.encodeCall(this._quoteExactOutputSingle, (params))) {}
         catch (bytes memory reason) {
             gasEstimate = gasBefore - gasleft();
             // Extract the quote from QuoteSwap error, or throw if the quote failed
-            amountIn = reason.parseQuoteAmount();
+            (amountIn, newSqrtPrice) = reason.parseQuoteData();
         }
     }
 
     /// @inheritdoc ICLQuoter
     function quoteExactOutput(QuoteExactParams memory params)
         external
-        returns (uint256 amountIn, uint256 gasEstimate)
+        returns (uint256 amountIn, uint256 gasEstimate, uint256 sqrtPrice, uint256 newSqrtPrice)
     {
         uint256 gasBefore = gasleft();
         try vault.lock(abi.encodeCall(this._quoteExactOutput, (params))) {}
         catch (bytes memory reason) {
             gasEstimate = gasBefore - gasleft();
             // Extract the quote from QuoteSwap error, or throw if the quote failed
-            amountIn = reason.parseQuoteAmount();
+            (amountIn, newSqrtPrice) = reason.parseQuoteData();
         }
     }
 
@@ -111,7 +114,7 @@ contract CLQuoter is ICLQuoter, BaseInfinityQuoter {
             inputCurrency = pathKey.intermediateCurrency;
         }
         // amountIn after the loop actually holds the amountOut of the trade
-        amountIn.revertQuote();
+        amountIn.revertQuote(0);
     }
 
     /// @dev quote an ExactInput swap on a pool, then revert with the result
@@ -121,7 +124,9 @@ contract CLQuoter is ICLQuoter, BaseInfinityQuoter {
 
         // the output delta of a swap is positive
         uint256 amountOut = params.zeroForOne ? uint128(swapDelta.amount1()) : uint128(swapDelta.amount0());
-        amountOut.revertQuote();
+        (uint160 sqrtPrice,,,) = poolManager
+            .getSlot0(params.poolKey.toId());
+        amountOut.revertQuote(sqrtPrice);
     }
 
     /// @dev quote ExactInput swap list on a pool, then revert with the result of last swap
@@ -142,7 +147,7 @@ contract CLQuoter is ICLQuoter, BaseInfinityQuoter {
                 amountOut = params.zeroForOne ? uint128(swapDelta.amount1()) : uint128(swapDelta.amount0());
             }
         }
-        amountOut.revertQuote();
+        amountOut.revertQuote(0);
     }
 
     /// @dev quote an ExactOutput swap along a path of tokens, then revert with the result
@@ -163,7 +168,7 @@ contract CLQuoter is ICLQuoter, BaseInfinityQuoter {
             outputCurrency = pathKey.intermediateCurrency;
         }
         // amountOut after the loop exits actually holds the amountIn of the trade
-        amountOut.revertQuote();
+        amountOut.revertQuote(0);
     }
 
     /// @dev quote an ExactOutput swap on a pool, then revert with the result
@@ -173,7 +178,9 @@ contract CLQuoter is ICLQuoter, BaseInfinityQuoter {
 
         // the input delta of a swap is negative so we must flip it
         uint256 amountIn = params.zeroForOne ? uint128(-swapDelta.amount0()) : uint128(-swapDelta.amount1());
-        amountIn.revertQuote();
+        (uint160 sqrtPrice,,,) = poolManager
+            .getSlot0(params.poolKey.toId());
+        amountIn.revertQuote(sqrtPrice);
     }
 
     /// @dev Execute a swap and return the balance delta
