@@ -66,7 +66,7 @@ contract BinPositionManagerHelper is Multicall {
     /// @notice Add liquidities to bin pool with slippage protection
     /// @param payload - encoded actions and parameters for bin position manager
     /// @param deadline - deadline for the transaction
-    /// @param minLiquidityParam - amount of [binId, liquidity] to mint
+    /// @param minLiquidityParam - amount of [binId, liquidity] on user wallet - user should check user current balance before this call as well
     /// @dev This function only support 1 BIN_ADD_LIQUIDITY call
     function addLiquidities(bytes calldata payload, uint256 deadline, MinLiquidityParams memory minLiquidityParam)
         external
@@ -90,7 +90,10 @@ contract BinPositionManagerHelper is Multicall {
         permit2.transferFrom(msg.sender, address(this), liquidityParams.amount1Max, Currency.unwrap(currency1));
         _approveBinPm(currency1, liquidityParams.amount1Max);
 
-        // Step 3a: Before Check user balance before
+        // Step 3a: modify liquidities
+        binPositionManager.modifyLiquidities{value: msg.value}(payload, deadline);
+
+        // Step 3b: Check user balance after
         address[] memory owners = new address[](minLiquidityParam.binIds.length);
         uint256[] memory tokenIds = new uint256[](minLiquidityParam.binIds.length);
         PoolId poolId = liquidityParams.poolKey.toId();
@@ -98,17 +101,10 @@ contract BinPositionManagerHelper is Multicall {
             owners[i] = msg.sender;
             tokenIds[i] = poolId.toTokenId(minLiquidityParam.binIds[i]);
         }
-        uint256[] memory balBefore = binPositionManager.balanceOfBatch(owners, tokenIds);
-
-        // Step 3b: modify liquidities
-        binPositionManager.modifyLiquidities{value: msg.value}(payload, deadline);
-
-        // Step 3c: Check user balance after
         uint256[] memory balAfter = binPositionManager.balanceOfBatch(owners, tokenIds);
         for (uint256 i = 0; i < minLiquidityParam.minLiquidities.length; i++) {
-            uint256 liquidityAdded = balAfter[i] - balBefore[i];
-            if (liquidityAdded < minLiquidityParam.minLiquidities[i]) {
-                revert SlippageCheck(minLiquidityParam.binIds[i], liquidityAdded);
+            if (balAfter[i] < minLiquidityParam.minLiquidities[i]) {
+                revert SlippageCheck(minLiquidityParam.binIds[i], balAfter[i]);
             }
         }
 
