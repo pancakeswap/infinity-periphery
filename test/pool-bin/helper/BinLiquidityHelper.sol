@@ -30,6 +30,9 @@ contract BinLiquidityHelper is Test {
     function approveBinPmForCurrency(address from, Currency currency, address binPm, IAllowanceTransfer permit2)
         internal
     {
+        // return early if currency is native, no need to approve
+        if (currency.isNative()) return;
+
         vm.startPrank(from);
 
         // Because BinPm uses permit2, we must execute 2 permits/approvals.
