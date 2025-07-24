@@ -1,6 +1,6 @@
 {
-  "BinPositionManagerHelper size": "7015",
-  "test_addLiquidities_existingPool": "1043471",
-  "test_addLiquidities_existingPool_nativeToken": "961745",
-  "test_addLiquidities_newPool": "1167450"
+  "BinPositionManagerHelper size": "6997",
+  "test_addLiquidities_existingPool": "1043390",
+  "test_addLiquidities_existingPool_nativeToken": "961664",
+  "test_addLiquidities_newPool": "1167369"
 }

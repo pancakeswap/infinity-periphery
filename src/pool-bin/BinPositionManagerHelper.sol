@@ -92,12 +92,10 @@ contract BinPositionManagerHelper is Multicall {
 
         // Step 3a: Before Check user balance before
         address[] memory owners = new address[](minLiquidityParam.binIds.length);
-        for (uint256 i = 0; i < minLiquidityParam.binIds.length; i++) {
-            owners[i] = msg.sender;
-        }
         uint256[] memory tokenIds = new uint256[](minLiquidityParam.binIds.length);
         PoolId poolId = liquidityParams.poolKey.toId();
-        for (uint256 i; i < minLiquidityParam.binIds.length; i++) {
+        for (uint256 i = 0; i < minLiquidityParam.binIds.length; i++) {
+            owners[i] = msg.sender;
             tokenIds[i] = poolId.toTokenId(minLiquidityParam.binIds[i]);
         }
         uint256[] memory balBefore = binPositionManager.balanceOfBatch(owners, tokenIds);
