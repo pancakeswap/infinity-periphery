@@ -16,13 +16,14 @@ import {IWETH9} from "../interfaces/external/IWETH9.sol";
 import {Actions} from "../libraries/Actions.sol";
 import {BinCalldataDecoder} from "./libraries/BinCalldataDecoder.sol";
 import {CalldataDecoder} from "../libraries/CalldataDecoder.sol";
+import {BinTokenLibrary} from "./libraries/BinTokenLibrary.sol";
 import {Multicall} from "../base/Multicall.sol";
 import {Permit2Forwarder} from "../base/Permit2Forwarder.sol";
-import {BinTokenLibrary} from "./libraries/BinTokenLibrary.sol";
+import {ReentrancyLock} from "../base/ReentrancyLock.sol";
 
 /// @title BinPositionManagerHelper
 /// @notice Helper contract for adding liquidity to bin pool with additional slippage protection
-contract BinPositionManagerHelper is Multicall, Permit2Forwarder {
+contract BinPositionManagerHelper is Multicall, Permit2Forwarder, ReentrancyLock {
     using CalldataDecoder for bytes;
     using BinCalldataDecoder for bytes;
     using BinTokenLibrary for PoolId;
@@ -69,6 +70,7 @@ contract BinPositionManagerHelper is Multicall, Permit2Forwarder {
     function addLiquidities(bytes calldata payload, uint256 deadline, MinLiquidityParams memory minLiquidityParam)
         external
         payable
+        isNotLocked
     {
         if (minLiquidityParam.binIds.length != minLiquidityParam.minLiquidities.length) {
             revert MinLiquidityParamsLengthMismatch();
@@ -126,6 +128,7 @@ contract BinPositionManagerHelper is Multicall, Permit2Forwarder {
         try binPoolManager.initialize(key, activeId) {} catch {}
     }
 
+    /// @dev Approve the bin position manager to spend the currency
     function _approveBinPm(Currency _currency, uint160 _amount) internal {
         if (!_currency.isNative()) {
             IERC20(Currency.unwrap(_currency)).approve(address(permit2), _amount);
