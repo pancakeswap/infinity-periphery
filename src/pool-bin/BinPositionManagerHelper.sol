@@ -10,20 +10,19 @@ import {PoolKey} from "infinity-core/src/types/PoolKey.sol";
 import {PoolId} from "infinity-core/src/types/PoolId.sol";
 import {IVault} from "infinity-core/src/interfaces/IVault.sol";
 
+import {IBinPositionManager} from "./interfaces/IBinPositionManager.sol";
+import {IBinPositionManagerWithERC1155} from "./interfaces/IBinPositionManagerWithERC1155.sol";
+import {IWETH9} from "../interfaces/external/IWETH9.sol";
 import {Actions} from "../libraries/Actions.sol";
 import {BinCalldataDecoder} from "./libraries/BinCalldataDecoder.sol";
 import {CalldataDecoder} from "../libraries/CalldataDecoder.sol";
-import {IBinPositionManager} from "./interfaces/IBinPositionManager.sol";
-import {IBinPositionManagerWithERC1155} from "./interfaces/IBinPositionManagerWithERC1155.sol";
 import {Multicall} from "../base/Multicall.sol";
+import {Permit2Forwarder} from "../base/Permit2Forwarder.sol";
 import {BinTokenLibrary} from "./libraries/BinTokenLibrary.sol";
-import {IWETH9} from "../interfaces/external/IWETH9.sol";
-
-import {console} from "forge-std/console.sol";
 
 /// @title BinPositionManagerHelper
 /// @notice Helper contract for adding liquidity to bin pool with additional slippage protection
-contract BinPositionManagerHelper is Multicall {
+contract BinPositionManagerHelper is Multicall, Permit2Forwarder {
     using CalldataDecoder for bytes;
     using BinCalldataDecoder for bytes;
     using BinTokenLibrary for PoolId;
@@ -48,7 +47,6 @@ contract BinPositionManagerHelper is Multicall {
 
     IBinPoolManager public immutable binPoolManager;
     IBinPositionManagerWithERC1155 public immutable binPositionManager;
-    IAllowanceTransfer public immutable permit2;
     IWETH9 public immutable WETH9;
 
     constructor(
@@ -56,7 +54,7 @@ contract BinPositionManagerHelper is Multicall {
         IBinPositionManagerWithERC1155 _binPositionManager,
         IAllowanceTransfer _permit2,
         IWETH9 _weth9
-    ) {
+    ) Permit2Forwarder(_permit2) {
         binPoolManager = _binPoolManager;
         binPositionManager = _binPositionManager;
         permit2 = _permit2;

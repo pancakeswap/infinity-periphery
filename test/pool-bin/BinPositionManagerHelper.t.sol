@@ -26,11 +26,19 @@ import {BinLiquidityHelper} from "./helper/BinLiquidityHelper.sol";
 import {Planner, Plan} from "../../src/libraries/Planner.sol";
 import {Actions} from "../../src/libraries/Actions.sol";
 import {ActionConstants} from "../../src/libraries/ActionConstants.sol";
+import {Permit2SignatureHelpers} from "../shared/Permit2SignatureHelpers.sol";
+import {Permit2Forwarder} from "../../src/base/Permit2Forwarder.sol";
 
 import {BinPositionManagerHelper} from "../../src/pool-bin/BinPositionManagerHelper.sol";
 import {IBinPositionManagerWithERC1155} from "../../src/pool-bin/interfaces/IBinPositionManagerWithERC1155.sol";
 
-contract BinPositionManagerHelperTest is Test, TokenFixture, DeployPermit2, BinLiquidityHelper {
+contract BinPositionManagerHelperTest is
+    Test,
+    Permit2SignatureHelpers,
+    TokenFixture,
+    DeployPermit2,
+    BinLiquidityHelper
+{
     using BinPoolParametersHelper for bytes32;
 
     error ContractSizeTooLarge(uint256 diff);
@@ -278,6 +286,71 @@ contract BinPositionManagerHelperTest is Test, TokenFixture, DeployPermit2, BinL
         // after
         assertEq(token0.balanceOf(alice), 1 ether); // initial 4 ether, then minus 3 ether added
         assertEq(token1.balanceOf(alice), 1 ether); // initial 4 ether, then minus 3 ether added
+    }
+
+    /// @dev example test with multiCall (to include initializePool and permit for new user)
+    function test_addLiquidities_newPool_WithPermit() public {
+        (address bob, uint256 bobPK) = makeAddrAndKey("bob");
+
+        // before, require bob to approve token to permit2
+        token0.mint(bob, 4 ether);
+        token1.mint(bob, 4 ether);
+        assertEq(token0.balanceOf(bob), 4 ether);
+        assertEq(token1.balanceOf(bob), 4 ether);
+        vm.startPrank(bob);
+        token0.approve(address(permit2), type(uint256).max);
+        token1.approve(address(permit2), type(uint256).max);
+        vm.stopPrank();
+
+        // step 1: prepare param liquidity. means roughly 3 bins
+        // with the following tokens in each bin: [1.5 token1, 1.5 token1 + 1.5 token0, 1.5 token0]
+        uint24[] memory binIds = getBinIds(activeId, 3);
+        IBinPositionManager.BinAddLiquidityParams memory param =
+            _getAddParams(key2, binIds, 3 ether, 3 ether, activeId, bob);
+        param.amount0Max = 3 ether * 1.1; // assume 10% slippage
+        param.amount1Max = 3 ether * 1.1; // assume 10% slippage
+        param.idSlippage = 0; // actveId is the same
+
+        // step 2: prepare minLiquidity param -- since id slippage, is 0, we can just check activeId minLiquidity
+        uint24[] memory minLiquidityBinIds = new uint24[](1);
+        uint256[] memory minLiquiditys = new uint256[](1);
+        uint256 price = PriceHelper.getPriceFromId(activeId, key2.parameters.getBinStep());
+        minLiquidityBinIds[0] = activeId;
+        minLiquiditys[0] = BinHelper.getLiquidity(1.5 ether, 1.5 ether, price) * 9999 / 10_000; // 0.01% slippage
+        BinPositionManagerHelper.MinLiquidityParams memory minLiquidityParam =
+            BinPositionManagerHelper.MinLiquidityParams({binIds: minLiquidityBinIds, minLiquidities: minLiquiditys});
+
+        // step 2b prepare the permit payload
+        uint160 permitAmount = type(uint160).max;
+        uint48 permitExpiration = uint48(block.timestamp + 10e18);
+        uint48 permitNonce = 0;
+        IAllowanceTransfer.PermitSingle memory permit0 =
+            defaultERC20PermitAllowance(Currency.unwrap(currency0), permitAmount, permitExpiration, permitNonce);
+        permit0.spender = address(binPmHelper);
+        bytes memory sig0 = getPermitSignature(permit0, bobPK, permit2.DOMAIN_SEPARATOR());
+        IAllowanceTransfer.PermitSingle memory permit1 =
+            defaultERC20PermitAllowance(Currency.unwrap(currency1), permitAmount, permitExpiration, permitNonce);
+        permit1.spender = address(binPmHelper);
+        bytes memory sig1 = getPermitSignature(permit1, bobPK, permit2.DOMAIN_SEPARATOR());
+
+        // Step 3: prepare addLiquidities payload
+        Plan memory planner = Planner.init();
+        planner.add(Actions.BIN_ADD_LIQUIDITY, abi.encode(param));
+        planner.add(Actions.SETTLE_PAIR, abi.encode(currency0, currency1));
+        bytes memory payload = planner.encode();
+
+        bytes[] memory calls = new bytes[](4);
+        calls[0] = abi.encodeWithSelector(binPmHelper.initializePool.selector, key2, activeId, ZERO_BYTES);
+        calls[1] = abi.encodeWithSelector(Permit2Forwarder.permit.selector, bob, permit0, sig0);
+        calls[2] = abi.encodeWithSelector(Permit2Forwarder.permit.selector, bob, permit1, sig1);
+        calls[3] = abi.encodeWithSelector(binPmHelper.addLiquidities.selector, payload, _deadline, minLiquidityParam);
+        vm.prank(bob);
+        binPmHelper.multicall(calls);
+        vm.snapshotGasLastCall("test_addLiquidities_newPool_WithPermit");
+
+        // after
+        assertEq(token0.balanceOf(bob), 1 ether); // initial 4 ether, then minus 3 ether added
+        assertEq(token1.balanceOf(bob), 1 ether); // initial 4 ether, then minus 3 ether added
     }
 
     function test_addLiquidities_newPool_DuplicateAddLiquidity() external {
