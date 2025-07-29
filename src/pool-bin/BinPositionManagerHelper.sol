@@ -10,20 +10,20 @@ import {PoolKey} from "infinity-core/src/types/PoolKey.sol";
 import {PoolId} from "infinity-core/src/types/PoolId.sol";
 import {IVault} from "infinity-core/src/interfaces/IVault.sol";
 
+import {IBinPositionManager} from "./interfaces/IBinPositionManager.sol";
+import {IBinPositionManagerWithERC1155} from "./interfaces/IBinPositionManagerWithERC1155.sol";
+import {IWETH9} from "../interfaces/external/IWETH9.sol";
 import {Actions} from "../libraries/Actions.sol";
 import {BinCalldataDecoder} from "./libraries/BinCalldataDecoder.sol";
 import {CalldataDecoder} from "../libraries/CalldataDecoder.sol";
-import {IBinPositionManager} from "./interfaces/IBinPositionManager.sol";
-import {IBinPositionManagerWithERC1155} from "./interfaces/IBinPositionManagerWithERC1155.sol";
-import {Multicall} from "../base/Multicall.sol";
 import {BinTokenLibrary} from "./libraries/BinTokenLibrary.sol";
-import {IWETH9} from "../interfaces/external/IWETH9.sol";
-
-import {console} from "forge-std/console.sol";
+import {Multicall} from "../base/Multicall.sol";
+import {Permit2Forwarder} from "../base/Permit2Forwarder.sol";
+import {ReentrancyLock} from "../base/ReentrancyLock.sol";
 
 /// @title BinPositionManagerHelper
 /// @notice Helper contract for adding liquidity to bin pool with additional slippage protection
-contract BinPositionManagerHelper is Multicall {
+contract BinPositionManagerHelper is Multicall, Permit2Forwarder, ReentrancyLock {
     using CalldataDecoder for bytes;
     using BinCalldataDecoder for bytes;
     using BinTokenLibrary for PoolId;
@@ -39,16 +39,18 @@ contract BinPositionManagerHelper is Multicall {
     /// @notice Thrown when minLiquidityParam's binIds and minLiquidities length mismatch
     error MinLiquidityParamsLengthMismatch();
     /// @notice Thrown when slippage checks fail
-    error SlippageCheck(uint256 binId, uint256 liquidityAdded);
+    error SlippageCheck(uint24 binId, uint256 liquidityAdded);
+    /// @notice Thrown when invalid (duplicate or non accending) binIds are found in minLiquidityParam
+    error InvalidBinId(uint24 binid);
 
     struct MinLiquidityParams {
+        /// @dev expect accending order of binIds eg. [20, 21, 22]
         uint24[] binIds;
         uint256[] minLiquidities;
     }
 
     IBinPoolManager public immutable binPoolManager;
     IBinPositionManagerWithERC1155 public immutable binPositionManager;
-    IAllowanceTransfer public immutable permit2;
     IWETH9 public immutable WETH9;
 
     constructor(
@@ -56,7 +58,7 @@ contract BinPositionManagerHelper is Multicall {
         IBinPositionManagerWithERC1155 _binPositionManager,
         IAllowanceTransfer _permit2,
         IWETH9 _weth9
-    ) {
+    ) Permit2Forwarder(_permit2) {
         binPoolManager = _binPoolManager;
         binPositionManager = _binPositionManager;
         permit2 = _permit2;
@@ -71,6 +73,7 @@ contract BinPositionManagerHelper is Multicall {
     function addLiquidities(bytes calldata payload, uint256 deadline, MinLiquidityParams memory minLiquidityParam)
         external
         payable
+        isNotLocked
     {
         if (minLiquidityParam.binIds.length != minLiquidityParam.minLiquidities.length) {
             revert MinLiquidityParamsLengthMismatch();
@@ -97,9 +100,13 @@ contract BinPositionManagerHelper is Multicall {
         address[] memory owners = new address[](minLiquidityParam.binIds.length);
         uint256[] memory tokenIds = new uint256[](minLiquidityParam.binIds.length);
         PoolId poolId = liquidityParams.poolKey.toId();
+        uint24 tempBinId = 0; // check duplicate binId
         for (uint256 i = 0; i < minLiquidityParam.binIds.length; i++) {
-            owners[i] = msg.sender;
-            tokenIds[i] = poolId.toTokenId(minLiquidityParam.binIds[i]);
+            owners[i] = liquidityParams.to;
+            // Sanity check -- eg. assume binId is accending order, so this will check duplicate as well
+            if (tempBinId >= minLiquidityParam.binIds[i]) revert InvalidBinId(minLiquidityParam.binIds[i]);
+            tempBinId = minLiquidityParam.binIds[i];
+            tokenIds[i] = poolId.toTokenId(tempBinId);
         }
         uint256[] memory balAfter = binPositionManager.balanceOfBatch(owners, tokenIds);
         for (uint256 i = 0; i < minLiquidityParam.minLiquidities.length; i++) {
@@ -124,11 +131,11 @@ contract BinPositionManagerHelper is Multicall {
         try binPoolManager.initialize(key, activeId) {} catch {}
     }
 
+    /// @notice Approve the bin position manager to spend the currency
+    /// @dev assume currency is not native
     function _approveBinPm(Currency _currency, uint160 _amount) internal {
-        if (!_currency.isNative()) {
-            IERC20(Currency.unwrap(_currency)).approve(address(permit2), _amount);
-            permit2.approve(Currency.unwrap(_currency), address(binPositionManager), _amount, uint48(block.timestamp));
-        }
+        IERC20(Currency.unwrap(_currency)).approve(address(permit2), _amount);
+        permit2.approve(Currency.unwrap(_currency), address(binPositionManager), _amount, uint48(block.timestamp));
     }
 
     function _getAddLiquidityParam(bytes calldata payload)
