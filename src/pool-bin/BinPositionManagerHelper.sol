@@ -39,9 +39,12 @@ contract BinPositionManagerHelper is Multicall, Permit2Forwarder, ReentrancyLock
     /// @notice Thrown when minLiquidityParam's binIds and minLiquidities length mismatch
     error MinLiquidityParamsLengthMismatch();
     /// @notice Thrown when slippage checks fail
-    error SlippageCheck(uint256 binId, uint256 liquidityAdded);
+    error SlippageCheck(uint24 binId, uint256 liquidityAdded);
+    /// @notice Thrown when invalid (duplicate or non accending) binIds are found in minLiquidityParam
+    error InvalidBinId(uint24 binid);
 
     struct MinLiquidityParams {
+        /// @dev expect accending order of binIds eg. [20, 21, 22]
         uint24[] binIds;
         uint256[] minLiquidities;
     }
@@ -94,9 +97,13 @@ contract BinPositionManagerHelper is Multicall, Permit2Forwarder, ReentrancyLock
         address[] memory owners = new address[](minLiquidityParam.binIds.length);
         uint256[] memory tokenIds = new uint256[](minLiquidityParam.binIds.length);
         PoolId poolId = liquidityParams.poolKey.toId();
+        uint24 tempBinId = 0; // check duplicate binId
         for (uint256 i = 0; i < minLiquidityParam.binIds.length; i++) {
             owners[i] = liquidityParams.to;
-            tokenIds[i] = poolId.toTokenId(minLiquidityParam.binIds[i]);
+            // Sanity check -- eg. assume binId is accending order, so this will check duplicate as well
+            if (tempBinId >= minLiquidityParam.binIds[i]) revert InvalidBinId(minLiquidityParam.binIds[i]);
+            tempBinId = minLiquidityParam.binIds[i];
+            tokenIds[i] = poolId.toTokenId(tempBinId);
         }
         uint256[] memory balBefore = binPositionManager.balanceOfBatch(owners, tokenIds);
 
