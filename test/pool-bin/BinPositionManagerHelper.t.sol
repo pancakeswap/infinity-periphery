@@ -61,7 +61,6 @@ contract BinPositionManagerHelperTest is
 
     bytes32 poolParam;
     address alice = makeAddr("alice");
-    address bob = makeAddr("bob");
     uint24 activeId = 2 ** 23; // where token0 and token1 price is the same
 
     function setUp() public {
@@ -164,8 +163,10 @@ contract BinPositionManagerHelperTest is
         assertEq(token1.balanceOf(alice), 1 ether); // initial 4 ether, then minus 3 ether added
     }
 
-    /// @dev mint to bob instead 
+    /// @dev mint to bob instead
     function test_addLiquidities_existingPool_bobReceiver() public {
+        address bob = makeAddr("bob");
+
         // before
         token0.mint(alice, 4 ether);
         token1.mint(alice, 4 ether);

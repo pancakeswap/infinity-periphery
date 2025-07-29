@@ -128,12 +128,11 @@ contract BinPositionManagerHelper is Multicall, Permit2Forwarder, ReentrancyLock
         try binPoolManager.initialize(key, activeId) {} catch {}
     }
 
-    /// @dev Approve the bin position manager to spend the currency
+    /// @notice Approve the bin position manager to spend the currency
+    /// @dev assume currency is not native
     function _approveBinPm(Currency _currency, uint160 _amount) internal {
-        if (!_currency.isNative()) {
-            IERC20(Currency.unwrap(_currency)).approve(address(permit2), _amount);
-            permit2.approve(Currency.unwrap(_currency), address(binPositionManager), _amount, uint48(block.timestamp));
-        }
+        IERC20(Currency.unwrap(_currency)).approve(address(permit2), _amount);
+        permit2.approve(Currency.unwrap(_currency), address(binPositionManager), _amount, uint48(block.timestamp));
     }
 
     function _getAddLiquidityParam(bytes calldata payload)
