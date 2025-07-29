@@ -95,7 +95,7 @@ contract BinPositionManagerHelper is Multicall, Permit2Forwarder, ReentrancyLock
         uint256[] memory tokenIds = new uint256[](minLiquidityParam.binIds.length);
         PoolId poolId = liquidityParams.poolKey.toId();
         for (uint256 i = 0; i < minLiquidityParam.binIds.length; i++) {
-            owners[i] = msg.sender;
+            owners[i] = liquidityParams.to;
             tokenIds[i] = poolId.toTokenId(minLiquidityParam.binIds[i]);
         }
         uint256[] memory balBefore = binPositionManager.balanceOfBatch(owners, tokenIds);

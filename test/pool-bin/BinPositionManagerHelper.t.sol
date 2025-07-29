@@ -61,6 +61,7 @@ contract BinPositionManagerHelperTest is
 
     bytes32 poolParam;
     address alice = makeAddr("alice");
+    address bob = makeAddr("bob");
     uint24 activeId = 2 ** 23; // where token0 and token1 price is the same
 
     function setUp() public {
@@ -157,6 +158,46 @@ contract BinPositionManagerHelperTest is
         vm.prank(alice);
         binPmHelper.addLiquidities(payload, _deadline, minLiquidityParam);
         vm.snapshotGasLastCall("test_addLiquidities_existingPool");
+
+        // after
+        assertEq(token0.balanceOf(alice), 1 ether); // initial 4 ether, then minus 3 ether added
+        assertEq(token1.balanceOf(alice), 1 ether); // initial 4 ether, then minus 3 ether added
+    }
+
+    /// @dev mint to bob instead 
+    function test_addLiquidities_existingPool_bobReceiver() public {
+        // before
+        token0.mint(alice, 4 ether);
+        token1.mint(alice, 4 ether);
+        assertEq(token0.balanceOf(alice), 4 ether);
+        assertEq(token1.balanceOf(alice), 4 ether);
+
+        // step 1: prepare param liquidity. means roughly 3 bins
+        // with the following tokens in each bin: [1.5 token1, 1.5 token1 + 1.5 token0, 1.5 token0]
+        uint24[] memory binIds = getBinIds(activeId, 3);
+        IBinPositionManager.BinAddLiquidityParams memory param =
+            _getAddParams(key1, binIds, 3 ether, 3 ether, activeId, bob);
+        param.amount0Max = 3 ether * 1.1; // assume 10% slippage
+        param.amount1Max = 3 ether * 1.1; // assume 10% slippage
+        param.idSlippage = 0; // actveId is the same
+
+        // step 2: prepare minLiquidity param -- since id slippage, is 0, we can just check activeId minLiquidity
+        uint24[] memory minLiquidityBinIds = new uint24[](1);
+        uint256[] memory minLiquiditys = new uint256[](1);
+        uint256 price = PriceHelper.getPriceFromId(activeId, key1.parameters.getBinStep());
+        minLiquidityBinIds[0] = activeId;
+        minLiquiditys[0] = BinHelper.getLiquidity(1.5 ether, 1.5 ether, price) * 9999 / 10_000; // 0.01% slippage
+        BinPositionManagerHelper.MinLiquidityParams memory minLiquidityParam =
+            BinPositionManagerHelper.MinLiquidityParams({binIds: minLiquidityBinIds, minLiquidities: minLiquiditys});
+
+        // Step 3: prepare and call
+        Plan memory planner = Planner.init();
+        planner.add(Actions.BIN_ADD_LIQUIDITY, abi.encode(param));
+        planner.add(Actions.SETTLE_PAIR, abi.encode(currency0, currency1));
+        bytes memory payload = planner.encode();
+        vm.prank(alice);
+        binPmHelper.addLiquidities(payload, _deadline, minLiquidityParam);
+        vm.snapshotGasLastCall("test_addLiquidities_existingPool_bobReceiver");
 
         // after
         assertEq(token0.balanceOf(alice), 1 ether); // initial 4 ether, then minus 3 ether added
