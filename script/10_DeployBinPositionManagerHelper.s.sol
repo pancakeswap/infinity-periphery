@@ -22,7 +22,7 @@ import {BinPositionManagerHelper} from "../src/pool-bin/BinPositionManagerHelper
  */
 contract DeployBinPositionManagerHelper is BaseScript {
     function getDeploymentSalt() public pure override returns (bytes32) {
-        return keccak256("INFINITY-PERIPHERY/BinPositionManagerHelper/xxxx");
+        return keccak256("INFINITY-PERIPHERY/BinPositionManagerHelper/1.0.0");
     }
 
     function run() public {
@@ -35,7 +35,7 @@ contract DeployBinPositionManagerHelper is BaseScript {
         emit log_named_address("binPoolManager", binPoolManager);
 
         address binPositionManager = getAddressFromConfig("binPositionManager");
-        emit log_named_address("binPositionManager", binPoolManager);
+        emit log_named_address("binPositionManager", binPositionManager);
 
         address permit2 = getAddressFromConfig("permit2");
         emit log_named_address("Permit2", permit2);

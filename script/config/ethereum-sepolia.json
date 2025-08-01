@@ -17,5 +17,6 @@
   "factoryV2": "0x1bdc540dEB9Ed1fA29964DeEcCc524A8f5e2198e",
   "factoryStable": "0x000000000000000000000000000000000000dEaD",
   "mixedQuoter": "0x3F47BDA24e069FC5f28B74d4FAB27EeBA006eF92",
-  "clTickLens": "0xE95fce3eEFcFf86B1d6a8951405432eA96505c98"
+  "clTickLens": "0xE95fce3eEFcFf86B1d6a8951405432eA96505c98",
+  "binPositionManagerHelper": "0x"
 }

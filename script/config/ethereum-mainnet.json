@@ -13,5 +13,6 @@
   "binQuoter": "0x",
   "clMigrator": "0x",
   "binMigrator": "0x",
-  "clTickLens": "0x"
+  "clTickLens": "0x",
+  "binPositionManagerHelper": "0x"
 }

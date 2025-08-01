@@ -19,5 +19,6 @@
   "factoryV2": "0x02a84c1b3BBD7401a5f7fa98a384EBC70bB5749E",
   "factoryStable": "0x64D74e1EAAe3176744b5767b93B7Bee39Cf7898F",
   "mixedQuoter": "0x2dCbF7B985c8C5C931818e4E107bAe8aaC8dAB7C",
-  "clTickLens": "0x8bcf30285413f25032fb983c2bf4defe29a33f3a"
+  "clTickLens": "0x8bcf30285413f25032fb983c2bf4defe29a33f3a",
+  "binPositionManagerHelper": "0xF4c3E0A83Ed93f6be55634C979e71c46c2453D4C"
 }
