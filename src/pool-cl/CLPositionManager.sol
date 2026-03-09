@@ -452,10 +452,7 @@ contract CLPositionManager is
         (liquidityDelta, feesAccrued) = clPoolManager.modifyLiquidity(
             poolKey,
             ICLPoolManager.ModifyLiquidityParams({
-                tickLower: info.tickLower(),
-                tickUpper: info.tickUpper(),
-                liquidityDelta: liquidityChange,
-                salt: salt
+                tickLower: info.tickLower(), tickUpper: info.tickUpper(), liquidityDelta: liquidityChange, salt: salt
             }),
             hookData
         );
@@ -494,11 +491,7 @@ contract CLPositionManager is
     }
 
     /// @inheritdoc ICLPositionManager
-    function getPoolAndPositionInfo(uint256 tokenId)
-        public
-        view
-        returns (PoolKey memory poolKey, CLPositionInfo info)
-    {
+    function getPoolAndPositionInfo(uint256 tokenId) public view returns (PoolKey memory poolKey, CLPositionInfo info) {
         info = positionInfo[tokenId];
         poolKey = poolKeys[info.poolId()];
     }

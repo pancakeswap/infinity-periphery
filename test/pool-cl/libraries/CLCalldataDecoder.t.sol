@@ -77,8 +77,9 @@ contract CLCalldataDecoderTest is Test {
         address _owner,
         bytes calldata _hookData
     ) public view {
-        bytes memory params =
-            abi.encode(_poolKey, _tickLower, _tickUpper, _liquidity, _amount0Max, _amount1Max, _owner, _hookData);
+        bytes memory params = abi.encode(
+            _poolKey, _tickLower, _tickUpper, _liquidity, _amount0Max, _amount1Max, _owner, _hookData
+        );
         (
             PoolKey memory poolKey,
             int24 tickLower,
@@ -138,10 +139,7 @@ contract CLCalldataDecoderTest is Test {
     function test_decodeSwapExactInParams_outOfBounds() public {
         PathKey[] memory path = new PathKey[](0);
         IInfinityRouter.CLSwapExactInputParams memory _swapParams = ICLRouterBase.CLSwapExactInputParams({
-            currencyIn: Currency.wrap(makeAddr("currencyIn")),
-            path: path,
-            amountIn: 1 ether,
-            amountOutMinimum: 1 ether
+            currencyIn: Currency.wrap(makeAddr("currencyIn")), path: path, amountIn: 1 ether, amountOutMinimum: 1 ether
         });
 
         /// @dev params.length is 192 as abi.encode adds 32 bytes for dynamic field. However ether.js doesn't add 32 bytes
@@ -172,11 +170,7 @@ contract CLCalldataDecoderTest is Test {
 
     function test_fuzz_decodeSwapExactInSingleParams_outOfBounds(PoolKey memory key) public {
         IInfinityRouter.CLSwapExactInputSingleParams memory _swapParams = ICLRouterBase.CLSwapExactInputSingleParams({
-            poolKey: key,
-            zeroForOne: true,
-            amountIn: 1 ether,
-            amountOutMinimum: 1 ether,
-            hookData: ""
+            poolKey: key, zeroForOne: true, amountIn: 1 ether, amountOutMinimum: 1 ether, hookData: ""
         });
 
         /// @dev params.length is 384 as abi.encode adds 32 bytes for dynamic field. However ether.js doesn't add 32 bytes
@@ -257,11 +251,7 @@ contract CLCalldataDecoderTest is Test {
 
     function test_fuzz_decodeSwapExactOutSingleParams_outOfBounds(PoolKey memory key) public {
         IInfinityRouter.CLSwapExactOutputSingleParams memory _swapParams = ICLRouterBase.CLSwapExactOutputSingleParams({
-            poolKey: key,
-            zeroForOne: true,
-            amountOut: 1 ether,
-            amountInMaximum: 1 ether,
-            hookData: ""
+            poolKey: key, zeroForOne: true, amountOut: 1 ether, amountInMaximum: 1 ether, hookData: ""
         });
 
         /// @dev params.length is 384 as abi.encode adds 32 bytes for dynamic field. However ether.js doesn't add 32 bytes

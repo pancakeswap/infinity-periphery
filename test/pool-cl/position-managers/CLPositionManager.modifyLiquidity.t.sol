@@ -129,9 +129,7 @@ contract CLPositionManagerModifyLiquiditiesTest is Test, PosmTestSetup, Liquidit
 
         // seedWeth(address(this));
         wethConfig = PositionConfig({
-            poolKey: wethKey,
-            tickLower: TickMath.minUsableTick(60),
-            tickUpper: TickMath.maxUsableTick(60)
+            poolKey: wethKey, tickLower: TickMath.minUsableTick(60), tickUpper: TickMath.maxUsableTick(60)
         });
         nativeConfig = PositionConfig({poolKey: nativeKey, tickLower: -120, tickUpper: 120});
         fotConfig = PositionConfig({poolKey: fotKey, tickLower: -120, tickUpper: 120});

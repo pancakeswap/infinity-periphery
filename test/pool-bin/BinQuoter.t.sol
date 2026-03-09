@@ -166,10 +166,7 @@ contract BinQuoterTest is Test, BinLiquidityHelper, DeployPermit2 {
 
         (uint256 _amountOut, uint256 _gasEstimate) = quoter.quoteExactInputSingle(
             IQuoter.QuoteExactSingleParams({
-                poolKey: key3,
-                zeroForOne: true,
-                exactAmount: 1 ether,
-                hookData: new bytes(0)
+                poolKey: key3, zeroForOne: true, exactAmount: 1 ether, hookData: new bytes(0)
             })
         );
 
@@ -211,10 +208,7 @@ contract BinQuoterTest is Test, BinLiquidityHelper, DeployPermit2 {
 
         (uint256 _amountOut, uint256 _gasEstimate) = quoter.quoteExactInputSingle(
             IQuoter.QuoteExactSingleParams({
-                poolKey: key3,
-                zeroForOne: false,
-                exactAmount: 1 ether,
-                hookData: new bytes(0)
+                poolKey: key3, zeroForOne: false, exactAmount: 1 ether, hookData: new bytes(0)
             })
         );
 
@@ -273,9 +267,7 @@ contract BinQuoterTest is Test, BinLiquidityHelper, DeployPermit2 {
 
         (uint256 _amountOut, uint256 _gasEstimate) = quoter.quoteExactInput(
             IQuoter.QuoteExactParams({
-                exactCurrency: Currency.wrap(address(token0)),
-                path: quoter_path,
-                exactAmount: 1 ether
+                exactCurrency: Currency.wrap(address(token0)), path: quoter_path, exactAmount: 1 ether
             })
         );
 
@@ -349,9 +341,7 @@ contract BinQuoterTest is Test, BinLiquidityHelper, DeployPermit2 {
 
         (uint256 _amountOut, uint256 _gasEstimate) = quoter.quoteExactInput(
             IQuoter.QuoteExactParams({
-                exactCurrency: Currency.wrap(address(token0)),
-                path: quoter_path,
-                exactAmount: 1 ether
+                exactCurrency: Currency.wrap(address(token0)), path: quoter_path, exactAmount: 1 ether
             })
         );
 
@@ -389,10 +379,7 @@ contract BinQuoterTest is Test, BinLiquidityHelper, DeployPermit2 {
 
         (uint256 _amountIn, uint256 _gasEstimate) = quoter.quoteExactOutputSingle(
             IQuoter.QuoteExactSingleParams({
-                poolKey: key,
-                zeroForOne: true,
-                exactAmount: 0.5 ether,
-                hookData: new bytes(0)
+                poolKey: key, zeroForOne: true, exactAmount: 0.5 ether, hookData: new bytes(0)
             })
         );
 
@@ -433,10 +420,7 @@ contract BinQuoterTest is Test, BinLiquidityHelper, DeployPermit2 {
 
         (uint256 _amountIn, uint256 _gasEstimate) = quoter.quoteExactOutputSingle(
             IQuoter.QuoteExactSingleParams({
-                poolKey: key,
-                zeroForOne: false,
-                exactAmount: 0.5 ether,
-                hookData: new bytes(0)
+                poolKey: key, zeroForOne: false, exactAmount: 0.5 ether, hookData: new bytes(0)
             })
         );
 
@@ -502,9 +486,7 @@ contract BinQuoterTest is Test, BinLiquidityHelper, DeployPermit2 {
 
         (uint256 _amountIn, uint256 _gasEstimate) = quoter.quoteExactOutput(
             IQuoter.QuoteExactParams({
-                exactCurrency: Currency.wrap(address(token1)),
-                path: quoter_path,
-                exactAmount: 0.5 ether
+                exactCurrency: Currency.wrap(address(token1)), path: quoter_path, exactAmount: 0.5 ether
             })
         );
 
@@ -583,9 +565,7 @@ contract BinQuoterTest is Test, BinLiquidityHelper, DeployPermit2 {
 
         (uint256 _amountIn, uint256 _gasEstimate) = quoter.quoteExactOutput(
             IQuoter.QuoteExactParams({
-                exactCurrency: Currency.wrap(address(token2)),
-                path: quoter_path,
-                exactAmount: 0.5 ether
+                exactCurrency: Currency.wrap(address(token2)), path: quoter_path, exactAmount: 0.5 ether
             })
         );
 
@@ -642,10 +622,7 @@ contract BinQuoterTest is Test, BinLiquidityHelper, DeployPermit2 {
 
         quoter._quoteExactInputSingle(
             IQuoter.QuoteExactSingleParams({
-                poolKey: key3,
-                zeroForOne: true,
-                exactAmount: 1 ether,
-                hookData: new bytes(0)
+                poolKey: key3, zeroForOne: true, exactAmount: 1 ether, hookData: new bytes(0)
             })
         );
     }
@@ -661,10 +638,7 @@ contract BinQuoterTest is Test, BinLiquidityHelper, DeployPermit2 {
         );
         quoter.quoteExactOutputSingle(
             IQuoter.QuoteExactSingleParams({
-                poolKey: key,
-                zeroForOne: true,
-                exactAmount: 20 ether,
-                hookData: new bytes(0)
+                poolKey: key, zeroForOne: true, exactAmount: 20 ether, hookData: new bytes(0)
             })
         );
     }

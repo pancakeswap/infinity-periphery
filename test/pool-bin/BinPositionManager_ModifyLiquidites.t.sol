@@ -880,9 +880,7 @@ contract BinPositionManager_ModifyLiquidityTest is BinLiquidityHelper, TokenFixt
         );
     }
 
-    function _test_transferLiquidityToken_revertIfVaultLocked(uint256[] memory ids, uint256[] memory amounts)
-        external
-    {
+    function _test_transferLiquidityToken_revertIfVaultLocked(uint256[] memory ids, uint256[] memory amounts) external {
         vm.expectRevert(IPositionManager.VaultMustBeUnlocked.selector);
         binPm.batchTransferFrom(address(this), makeAddr("someone"), ids, amounts);
     }
@@ -909,19 +907,19 @@ contract BinPositionManager_ModifyLiquidityTest is BinLiquidityHelper, TokenFixt
             fotKey, binIds, uint128(amountAfterTransfer), uint128(amountAfterTransfer), activeId, address(this)
         );
 
-        IBinPositionManager.BinAddLiquidityFromDeltasParams memory param = IBinPositionManager
-            .BinAddLiquidityFromDeltasParams({
-            poolKey: _param.poolKey,
-            amount0Max: _param.amount0Max,
-            amount1Max: _param.amount1Max,
-            activeIdDesired: _param.activeIdDesired,
-            idSlippage: _param.idSlippage,
-            deltaIds: _param.deltaIds,
-            distributionX: _param.distributionX,
-            distributionY: _param.distributionY,
-            to: _param.to,
-            hookData: _param.hookData
-        });
+        IBinPositionManager.BinAddLiquidityFromDeltasParams memory param =
+            IBinPositionManager.BinAddLiquidityFromDeltasParams({
+                poolKey: _param.poolKey,
+                amount0Max: _param.amount0Max,
+                amount1Max: _param.amount1Max,
+                activeIdDesired: _param.activeIdDesired,
+                idSlippage: _param.idSlippage,
+                deltaIds: _param.deltaIds,
+                distributionX: _param.distributionX,
+                distributionY: _param.distributionY,
+                to: _param.to,
+                hookData: _param.hookData
+            });
         planner.add(Actions.BIN_ADD_LIQUIDITY_FROM_DELTAS, abi.encode(param));
 
         bytes memory plan = planner.encode();
@@ -958,19 +956,19 @@ contract BinPositionManager_ModifyLiquidityTest is BinLiquidityHelper, TokenFixt
         IBinPositionManager.BinAddLiquidityParams memory _param =
             _getAddParams(key1, binIds, uint128(amountToSend), uint128(amountToSend), activeId, address(this));
 
-        IBinPositionManager.BinAddLiquidityFromDeltasParams memory param = IBinPositionManager
-            .BinAddLiquidityFromDeltasParams({
-            poolKey: _param.poolKey,
-            amount0Max: _param.amount0Max,
-            amount1Max: _param.amount1Max,
-            activeIdDesired: _param.activeIdDesired,
-            idSlippage: _param.idSlippage,
-            deltaIds: _param.deltaIds,
-            distributionX: _param.distributionX,
-            distributionY: _param.distributionY,
-            to: _param.to,
-            hookData: _param.hookData
-        });
+        IBinPositionManager.BinAddLiquidityFromDeltasParams memory param =
+            IBinPositionManager.BinAddLiquidityFromDeltasParams({
+                poolKey: _param.poolKey,
+                amount0Max: _param.amount0Max,
+                amount1Max: _param.amount1Max,
+                activeIdDesired: _param.activeIdDesired,
+                idSlippage: _param.idSlippage,
+                deltaIds: _param.deltaIds,
+                distributionX: _param.distributionX,
+                distributionY: _param.distributionY,
+                to: _param.to,
+                hookData: _param.hookData
+            });
         planner.add(Actions.BIN_ADD_LIQUIDITY_FROM_DELTAS, abi.encode(param));
 
         bytes memory plan = planner.encode();
@@ -1025,19 +1023,19 @@ contract BinPositionManager_ModifyLiquidityTest is BinLiquidityHelper, TokenFixt
         IBinPositionManager.BinAddLiquidityParams memory _param = _getAddParams(
             fotKey, binIds, uint128(amount0AfterTransfer), uint128(amount1AfterTransfer), activeId, address(this)
         );
-        IBinPositionManager.BinAddLiquidityFromDeltasParams memory param = IBinPositionManager
-            .BinAddLiquidityFromDeltasParams({
-            poolKey: _param.poolKey,
-            amount0Max: _param.amount0Max,
-            amount1Max: _param.amount1Max,
-            activeIdDesired: _param.activeIdDesired,
-            idSlippage: _param.idSlippage,
-            deltaIds: _param.deltaIds,
-            distributionX: _param.distributionX,
-            distributionY: _param.distributionY,
-            to: _param.to,
-            hookData: _param.hookData
-        });
+        IBinPositionManager.BinAddLiquidityFromDeltasParams memory param =
+            IBinPositionManager.BinAddLiquidityFromDeltasParams({
+                poolKey: _param.poolKey,
+                amount0Max: _param.amount0Max,
+                amount1Max: _param.amount1Max,
+                activeIdDesired: _param.activeIdDesired,
+                idSlippage: _param.idSlippage,
+                deltaIds: _param.deltaIds,
+                distributionX: _param.distributionX,
+                distributionY: _param.distributionY,
+                to: _param.to,
+                hookData: _param.hookData
+            });
         planner.add(Actions.BIN_ADD_LIQUIDITY_FROM_DELTAS, abi.encode(param));
 
         bytes memory plan = planner.encode();

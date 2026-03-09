@@ -74,10 +74,7 @@ contract CLSwapRouterTest is TokenFixture, Test {
         positionManager.modifyPosition(
             poolKey0,
             ICLPoolManager.ModifyLiquidityParams({
-                tickLower: 46053,
-                tickUpper: 46055,
-                liquidityDelta: 1e4 ether,
-                salt: bytes32(0)
+                tickLower: 46053, tickUpper: 46055, liquidityDelta: 1e4 ether, salt: bytes32(0)
             }),
             new bytes(0)
         );
@@ -99,10 +96,7 @@ contract CLSwapRouterTest is TokenFixture, Test {
         positionManager.modifyPosition(
             poolKey1,
             ICLPoolManager.ModifyLiquidityParams({
-                tickLower: -5,
-                tickUpper: 5,
-                liquidityDelta: 1e5 ether,
-                salt: bytes32(0)
+                tickLower: -5, tickUpper: 5, liquidityDelta: 1e5 ether, salt: bytes32(0)
             }),
             new bytes(0)
         );
@@ -126,10 +120,7 @@ contract CLSwapRouterTest is TokenFixture, Test {
         positionManager.modifyPosition{value: 25 ether}(
             poolKey2,
             ICLPoolManager.ModifyLiquidityParams({
-                tickLower: -5,
-                tickUpper: 5,
-                liquidityDelta: 1e5 ether,
-                salt: bytes32(0)
+                tickLower: -5, tickUpper: 5, liquidityDelta: 1e5 ether, salt: bytes32(0)
             }),
             new bytes(0)
         );

@@ -59,9 +59,7 @@ contract TickLens is ITickLens {
                 int24 populatedTick = ((int24(tickBitmapIndex) << 8) + int24(int256(i))) * tickSpacing;
                 Tick.Info memory tickInfo = poolManager.getPoolTickInfo(id, populatedTick);
                 populatedTicks[--numberOfPopulatedTicks] = PopulatedTick({
-                    tick: populatedTick,
-                    liquidityNet: tickInfo.liquidityNet,
-                    liquidityGross: tickInfo.liquidityGross
+                    tick: populatedTick, liquidityNet: tickInfo.liquidityNet, liquidityGross: tickInfo.liquidityGross
                 });
             }
         }

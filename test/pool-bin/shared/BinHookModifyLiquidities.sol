@@ -31,7 +31,11 @@ contract BinHookModifyLiquidities is BinHookSavesDelta {
         bool, /* swapForY **/
         int128, /* amountSpecified **/
         bytes calldata hookData
-    ) external override returns (bytes4, BeforeSwapDelta, uint24) {
+    )
+        external
+        override
+        returns (bytes4, BeforeSwapDelta, uint24)
+    {
         approvePosmCurrency(key.currency0);
         approvePosmCurrency(key.currency1);
 
@@ -45,7 +49,11 @@ contract BinHookModifyLiquidities is BinHookSavesDelta {
         PoolKey calldata, /* key **/
         IBinPoolManager.MintParams calldata, /* params **/
         bytes calldata hookData
-    ) external override returns (bytes4, uint24) {
+    )
+        external
+        override
+        returns (bytes4, uint24)
+    {
         if (hookData.length > 0) {
             (bytes memory actions, bytes[] memory params) = abi.decode(hookData, (bytes, bytes[]));
             posm.modifyLiquiditiesWithoutLock(actions, params);
@@ -58,7 +66,11 @@ contract BinHookModifyLiquidities is BinHookSavesDelta {
         PoolKey calldata, /* key **/
         IBinPoolManager.BurnParams calldata, /* params **/
         bytes calldata hookData
-    ) external override returns (bytes4) {
+    )
+        external
+        override
+        returns (bytes4)
+    {
         if (hookData.length > 0) {
             (bytes memory actions, bytes[] memory params) = abi.decode(hookData, (bytes, bytes[]));
             posm.modifyLiquiditiesWithoutLock(actions, params);

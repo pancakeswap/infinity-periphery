@@ -89,10 +89,7 @@ contract BinCalldataDecoderTest is Test {
     function test_decodeBinSwapExactInParams_outOfBounds() public {
         PathKey[] memory path = new PathKey[](0);
         IInfinityRouter.BinSwapExactInputParams memory _swapParams = IBinRouterBase.BinSwapExactInputParams({
-            currencyIn: Currency.wrap(makeAddr("currencyIn")),
-            path: path,
-            amountIn: 1 ether,
-            amountOutMinimum: 1 ether
+            currencyIn: Currency.wrap(makeAddr("currencyIn")), path: path, amountIn: 1 ether, amountOutMinimum: 1 ether
         });
 
         /// @dev params.length is 192 as abi.encode adds 32 bytes for dynamic field. However ether.js doesn't add 32 bytes
@@ -123,11 +120,7 @@ contract BinCalldataDecoderTest is Test {
 
     function test_fuzz_decodeBinSwapExactInSingleParams_outOfBounds(PoolKey memory key) public {
         IInfinityRouter.BinSwapExactInputSingleParams memory _swapParams = IBinRouterBase.BinSwapExactInputSingleParams({
-            poolKey: key,
-            swapForY: true,
-            amountIn: 1 ether,
-            amountOutMinimum: 1 ether,
-            hookData: ""
+            poolKey: key, swapForY: true, amountIn: 1 ether, amountOutMinimum: 1 ether, hookData: ""
         });
 
         /// @dev params.length is 384 as abi.encode adds 32 bytes for dynamic field. However ether.js doesn't add 32 bytes
@@ -191,13 +184,8 @@ contract BinCalldataDecoderTest is Test {
     }
 
     function test_fuzz_decodeBinSwapExactOutSingleParams_outOfBounds(PoolKey memory key) public {
-        IInfinityRouter.BinSwapExactOutputSingleParams memory _swapParams = IBinRouterBase
-            .BinSwapExactOutputSingleParams({
-            poolKey: key,
-            swapForY: true,
-            amountOut: 1 ether,
-            amountInMaximum: 1 ether,
-            hookData: ""
+        IInfinityRouter.BinSwapExactOutputSingleParams memory _swapParams = IBinRouterBase.BinSwapExactOutputSingleParams({
+            poolKey: key, swapForY: true, amountOut: 1 ether, amountInMaximum: 1 ether, hookData: ""
         });
 
         /// @dev params.length is 384 as abi.encode adds 32 bytes for dynamic field. However ether.js doesn't add 32 bytes

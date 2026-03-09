@@ -58,8 +58,8 @@ library FeeMath {
         pure
         returns (uint128 tokenOwed)
     {
-        tokenOwed =
-            (FullMath.mulDiv(feeGrowthInsideX128 - feeGrowthInsideLastX128, liquidity, FixedPoint128.Q128)).toUint128();
+        tokenOwed = (FullMath.mulDiv(feeGrowthInsideX128 - feeGrowthInsideLastX128, liquidity, FixedPoint128.Q128))
+        .toUint128();
     }
 
     // TODO: should we consider migrating this into core repo ?
