@@ -41,8 +41,12 @@ contract DeployStableSwapHelper is Script {
         address pancakeStableSwapLPFactory;
         bytes32 salt = keccak256(abi.encodePacked(msg.sender, block.timestamp));
         assembly ("memory-safe") {
-            pancakeStableSwapLPFactory :=
-                create2(0, add(pancakeStableSwapLPFactoryBytecode, 32), mload(pancakeStableSwapLPFactoryBytecode), salt)
+            pancakeStableSwapLPFactory := create2(
+                0,
+                add(pancakeStableSwapLPFactoryBytecode, 32),
+                mload(pancakeStableSwapLPFactoryBytecode),
+                salt
+            )
         }
 
         return pancakeStableSwapLPFactory;
@@ -55,13 +59,12 @@ contract DeployStableSwapHelper is Script {
         address pancakeStableSwapTwoPoolDeployer;
         bytes32 salt = keccak256(abi.encodePacked(msg.sender, block.timestamp));
         assembly ("memory-safe") {
-            pancakeStableSwapTwoPoolDeployer :=
-                create2(
-                    0,
-                    add(pancakeStableSwapTwoPoolDeployerBytecode, 32),
-                    mload(pancakeStableSwapTwoPoolDeployerBytecode),
-                    salt
-                )
+            pancakeStableSwapTwoPoolDeployer := create2(
+                0,
+                add(pancakeStableSwapTwoPoolDeployerBytecode, 32),
+                mload(pancakeStableSwapTwoPoolDeployerBytecode),
+                salt
+            )
         }
 
         return pancakeStableSwapTwoPoolDeployer;
@@ -74,13 +77,12 @@ contract DeployStableSwapHelper is Script {
         address pancakeStableSwapThreePoolDeployer;
         bytes32 salt = keccak256(abi.encodePacked(msg.sender, block.timestamp));
         assembly ("memory-safe") {
-            pancakeStableSwapThreePoolDeployer :=
-                create2(
-                    0,
-                    add(pancakeStableSwapThreePoolDeployerBytecode, 32),
-                    mload(pancakeStableSwapThreePoolDeployerBytecode),
-                    salt
-                )
+            pancakeStableSwapThreePoolDeployer := create2(
+                0,
+                add(pancakeStableSwapThreePoolDeployerBytecode, 32),
+                mload(pancakeStableSwapThreePoolDeployerBytecode),
+                salt
+            )
         }
 
         return pancakeStableSwapThreePoolDeployer;

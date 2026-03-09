@@ -65,11 +65,7 @@ contract MixedQuoter is IMixedQuoter, IPancakeV3SwapCallback, Multicall {
      */
 
     /// @inheritdoc IPancakeV3SwapCallback
-    function pancakeV3SwapCallback(int256 amount0Delta, int256 amount1Delta, bytes memory data)
-        external
-        view
-        override
-    {
+    function pancakeV3SwapCallback(int256 amount0Delta, int256 amount1Delta, bytes memory data) external view override {
         require(amount0Delta > 0 || amount1Delta > 0); // swaps entirely within 0-liquidity regions are not supported
         (address tokenIn, address tokenOut, uint24 fee) = abi.decode(data, (address, address, uint24));
         V3SmartRouterHelper.verifyCallback(factoryV3, tokenIn, tokenOut, fee);
@@ -144,7 +140,8 @@ contract MixedQuoter is IMixedQuoter, IPancakeV3SwapCallback, Multicall {
                 ? (zeroForOne ? TickMath.MIN_SQRT_RATIO + 1 : TickMath.MAX_SQRT_RATIO - 1)
                 : params.sqrtPriceLimitX96,
             abi.encode(params.tokenIn, params.tokenOut, params.fee)
-        ) {} catch (bytes memory reason) {
+        ) {}
+        catch (bytes memory reason) {
             gasEstimate = gasBefore - gasleft();
             return handleV3Revert(reason, pool, gasEstimate);
         }
@@ -273,11 +270,7 @@ contract MixedQuoter is IMixedQuoter, IPancakeV3SwapCallback, Multicall {
                 if (!withContext) {
                     (amountIn,,, gasEstimateForCurAction) = quoteExactInputSingleV3(
                         QuoteExactInputSingleV3Params({
-                            tokenIn: tokenIn,
-                            tokenOut: tokenOut,
-                            amountIn: amountIn,
-                            fee: fee,
-                            sqrtPriceLimitX96: 0
+                            tokenIn: tokenIn, tokenOut: tokenOut, amountIn: amountIn, fee: fee, sqrtPriceLimitX96: 0
                         })
                     );
                 } else {
@@ -292,11 +285,7 @@ contract MixedQuoter is IMixedQuoter, IPancakeV3SwapCallback, Multicall {
                     amountIn += accAmountIn;
                     (swapAmountOut,,, gasEstimateForCurAction) = quoteExactInputSingleV3(
                         QuoteExactInputSingleV3Params({
-                            tokenIn: tokenIn,
-                            tokenOut: tokenOut,
-                            amountIn: amountIn,
-                            fee: fee,
-                            sqrtPriceLimitX96: 0
+                            tokenIn: tokenIn, tokenOut: tokenOut, amountIn: amountIn, fee: fee, sqrtPriceLimitX96: 0
                         })
                     );
                     MixedQuoterRecorder.setPoolSwapTokenAccumulation(poolHash, amountIn, swapAmountOut, zeroForOne);
@@ -383,10 +372,7 @@ contract MixedQuoter is IMixedQuoter, IPancakeV3SwapCallback, Multicall {
                 if (!withContext) {
                     (amountIn, gasEstimateForCurAction) = quoteExactInputSingleStable(
                         QuoteExactInputSingleStableParams({
-                            tokenIn: tokenIn,
-                            tokenOut: tokenOut,
-                            amountIn: amountIn,
-                            flag: 2
+                            tokenIn: tokenIn, tokenOut: tokenOut, amountIn: amountIn, flag: 2
                         })
                     );
                 } else {
@@ -400,10 +386,7 @@ contract MixedQuoter is IMixedQuoter, IPancakeV3SwapCallback, Multicall {
                     amountIn += accAmountIn;
                     (swapAmountOut, gasEstimateForCurAction) = quoteExactInputSingleStable(
                         QuoteExactInputSingleStableParams({
-                            tokenIn: tokenIn,
-                            tokenOut: tokenOut,
-                            amountIn: amountIn,
-                            flag: 2
+                            tokenIn: tokenIn, tokenOut: tokenOut, amountIn: amountIn, flag: 2
                         })
                     );
                     MixedQuoterRecorder.setPoolSwapTokenAccumulation(poolHash, amountIn, swapAmountOut, zeroForOne);
@@ -415,10 +398,7 @@ contract MixedQuoter is IMixedQuoter, IPancakeV3SwapCallback, Multicall {
                 // params[actionIndex] is zero bytes
                 (amountIn, gasEstimateForCurAction) = quoteExactInputSingleStable(
                     QuoteExactInputSingleStableParams({
-                        tokenIn: tokenIn,
-                        tokenOut: tokenOut,
-                        amountIn: amountIn,
-                        flag: 3
+                        tokenIn: tokenIn, tokenOut: tokenOut, amountIn: amountIn, flag: 3
                     })
                 );
             } else {

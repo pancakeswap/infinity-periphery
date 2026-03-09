@@ -89,10 +89,7 @@ contract CLQuoterTest is Test, Deployers {
 
         (uint256 _amountOut, uint256 _gasEstimate) = quoter.quoteExactInputSingle(
             IQuoter.QuoteExactSingleParams({
-                poolKey: key02,
-                zeroForOne: true,
-                exactAmount: uint128(amountIn),
-                hookData: ZERO_BYTES
+                poolKey: key02, zeroForOne: true, exactAmount: uint128(amountIn), hookData: ZERO_BYTES
             })
         );
 
@@ -117,10 +114,7 @@ contract CLQuoterTest is Test, Deployers {
 
         (uint256 _amountOut, uint256 _gasEstimate) = quoter.quoteExactInputSingle(
             IQuoter.QuoteExactSingleParams({
-                poolKey: key02,
-                zeroForOne: false,
-                exactAmount: uint128(amountIn),
-                hookData: ZERO_BYTES
+                poolKey: key02, zeroForOne: false, exactAmount: uint128(amountIn), hookData: ZERO_BYTES
             })
         );
 
@@ -290,10 +284,7 @@ contract CLQuoterTest is Test, Deployers {
         );
         quoter.quoteExactOutputSingle(
             IQuoter.QuoteExactSingleParams({
-                poolKey: key01,
-                zeroForOne: true,
-                exactAmount: type(uint128).max,
-                hookData: ZERO_BYTES
+                poolKey: key01, zeroForOne: true, exactAmount: type(uint128).max, hookData: ZERO_BYTES
             })
         );
     }
@@ -501,8 +492,8 @@ contract CLQuoterTest is Test, Deployers {
             ICLPoolManager.ModifyLiquidityParams({
                 tickLower: MIN_TICK,
                 tickUpper: MAX_TICK,
-                liquidityDelta: calculateLiquidityFromAmounts(SQRT_RATIO_1_1, MIN_TICK, MAX_TICK, 1000000, 1000000).toInt256(
-                ),
+                liquidityDelta: calculateLiquidityFromAmounts(SQRT_RATIO_1_1, MIN_TICK, MAX_TICK, 1000000, 1000000)
+                    .toInt256(),
                 salt: bytes32(0)
             }),
             ZERO_BYTES

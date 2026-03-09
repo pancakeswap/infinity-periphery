@@ -52,10 +52,7 @@ contract CLQuoter is ICLQuoter, BaseInfinityQuoter {
     }
 
     /// @inheritdoc ICLQuoter
-    function quoteExactInput(QuoteExactParams memory params)
-        external
-        returns (uint256 amountOut, uint256 gasEstimate)
-    {
+    function quoteExactInput(QuoteExactParams memory params) external returns (uint256 amountOut, uint256 gasEstimate) {
         uint256 gasBefore = gasleft();
         try vault.lock(abi.encodeCall(this._quoteExactInput, (params))) {}
         catch (bytes memory reason) {
@@ -80,10 +77,7 @@ contract CLQuoter is ICLQuoter, BaseInfinityQuoter {
     }
 
     /// @inheritdoc ICLQuoter
-    function quoteExactOutput(QuoteExactParams memory params)
-        external
-        returns (uint256 amountIn, uint256 gasEstimate)
-    {
+    function quoteExactOutput(QuoteExactParams memory params) external returns (uint256 amountIn, uint256 gasEstimate) {
         uint256 gasBefore = gasleft();
         try vault.lock(abi.encodeCall(this._quoteExactOutput, (params))) {}
         catch (bytes memory reason) {

@@ -95,8 +95,9 @@ abstract contract CLNotifier is ICLNotifier {
         // remove the subscriber
         delete subscriber[tokenId];
 
-        bool success =
-            _call(_subscriber, abi.encodeCall(ICLSubscriber.notifyBurn, (tokenId, owner, info, liquidity, feesAccrued)));
+        bool success = _call(
+            _subscriber, abi.encodeCall(ICLSubscriber.notifyBurn, (tokenId, owner, info, liquidity, feesAccrued))
+        );
 
         if (!success) {
             _subscriber.bubbleUpAndRevertWith(ICLSubscriber.notifyBurn.selector, BurnNotificationReverted.selector);

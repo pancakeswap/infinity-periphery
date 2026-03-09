@@ -68,15 +68,16 @@ contract PancakeV3Router {
 
         bool zeroForOne = tokenIn < tokenOut;
 
-        (int256 amount0, int256 amount1) = getPool(tokenIn, tokenOut, fee).swap(
-            recipient,
-            zeroForOne,
-            int256(amountIn),
-            sqrtPriceLimitX96 == 0
-                ? (zeroForOne ? TickMath.MIN_SQRT_RATIO + 1 : TickMath.MAX_SQRT_RATIO - 1)
-                : sqrtPriceLimitX96,
-            data
-        );
+        (int256 amount0, int256 amount1) = getPool(tokenIn, tokenOut, fee)
+            .swap(
+                recipient,
+                zeroForOne,
+                int256(amountIn),
+                sqrtPriceLimitX96 == 0
+                    ? (zeroForOne ? TickMath.MIN_SQRT_RATIO + 1 : TickMath.MAX_SQRT_RATIO - 1)
+                    : sqrtPriceLimitX96,
+                data
+            );
 
         return uint256(-(zeroForOne ? amount1 : amount0));
     }

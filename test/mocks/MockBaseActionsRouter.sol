@@ -58,55 +58,107 @@ contract MockBaseActionsRouter is BaseActionsRouter {
         return address(0xdeadbeef);
     }
 
-    function _clSwap(bytes calldata /* params **/ ) internal {
+    function _clSwap(
+        bytes calldata /* params **/
+    )
+        internal
+    {
         clSwapCount++;
     }
 
-    function _binSwap(bytes calldata /* params **/ ) internal {
+    function _binSwap(
+        bytes calldata /* params **/
+    )
+        internal
+    {
         binSwapCount++;
     }
 
-    function _clIncreaseLiquidity(bytes calldata /* params **/ ) internal {
+    function _clIncreaseLiquidity(
+        bytes calldata /* params **/
+    )
+        internal
+    {
         clIncreaseLiqCount++;
     }
 
-    function _binAddLiquidity(bytes calldata /* params **/ ) internal {
+    function _binAddLiquidity(
+        bytes calldata /* params **/
+    )
+        internal
+    {
         binAddLiqCount++;
     }
 
-    function _clDecreaseLiquidity(bytes calldata /* params **/ ) internal {
+    function _clDecreaseLiquidity(
+        bytes calldata /* params **/
+    )
+        internal
+    {
         clDecreaseLiqCount++;
     }
 
-    function _binRemoveLiquidity(bytes calldata /* params **/ ) internal {
+    function _binRemoveLiquidity(
+        bytes calldata /* params **/
+    )
+        internal
+    {
         binRemoveLiqCount++;
     }
 
-    function _clDonate(bytes calldata /* params **/ ) internal {
+    function _clDonate(
+        bytes calldata /* params **/
+    )
+        internal
+    {
         clDonateCount++;
     }
 
-    function _binDonate(bytes calldata /* params **/ ) internal {
+    function _binDonate(
+        bytes calldata /* params **/
+    )
+        internal
+    {
         binDonateCount++;
     }
 
-    function _settle(bytes calldata /* params **/ ) internal {
+    function _settle(
+        bytes calldata /* params **/
+    )
+        internal
+    {
         settleCount++;
     }
 
-    function _take(bytes calldata /* params **/ ) internal {
+    function _take(
+        bytes calldata /* params **/
+    )
+        internal
+    {
         takeCount++;
     }
 
-    function _mint6909(bytes calldata /* params **/ ) internal {
+    function _mint6909(
+        bytes calldata /* params **/
+    )
+        internal
+    {
         mintCount++;
     }
 
-    function _burn6909(bytes calldata /* params **/ ) internal {
+    function _burn6909(
+        bytes calldata /* params **/
+    )
+        internal
+    {
         burnCount++;
     }
 
-    function _clear(bytes calldata /* params **/ ) internal {
+    function _clear(
+        bytes calldata /* params **/
+    )
+        internal
+    {
         clearCount++;
     }
 

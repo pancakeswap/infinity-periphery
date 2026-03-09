@@ -27,19 +27,20 @@ contract LiquidityFuzzers is Fuzzers {
         params = Fuzzers.createFuzzyLiquidityParams(key, params, sqrtPriceX96);
 
         uint128 MAX_SLIPPAGE_INCREASE = type(uint128).max;
-        Plan memory planner = Planner.init().add(
-            Actions.CL_MINT_POSITION,
-            abi.encode(
-                key,
-                params.tickLower,
-                params.tickUpper,
-                uint256(params.liquidityDelta),
-                MAX_SLIPPAGE_INCREASE,
-                MAX_SLIPPAGE_INCREASE,
-                recipient,
-                hookData
-            )
-        );
+        Plan memory planner = Planner.init()
+            .add(
+                Actions.CL_MINT_POSITION,
+                abi.encode(
+                    key,
+                    params.tickLower,
+                    params.tickUpper,
+                    uint256(params.liquidityDelta),
+                    MAX_SLIPPAGE_INCREASE,
+                    MAX_SLIPPAGE_INCREASE,
+                    recipient,
+                    hookData
+                )
+            );
 
         uint256 tokenId = lpm.nextTokenId();
         bytes memory calls = planner.finalizeModifyLiquidityWithClose(key);
@@ -81,19 +82,20 @@ contract LiquidityFuzzers is Fuzzers {
         params = createFuzzyTwoSidedLiquidityParams(key, params, sqrtPriceX96);
 
         uint128 MAX_SLIPPAGE_INCREASE = type(uint128).max;
-        Plan memory planner = Planner.init().add(
-            Actions.CL_MINT_POSITION,
-            abi.encode(
-                key,
-                params.tickLower,
-                params.tickUpper,
-                uint256(params.liquidityDelta),
-                MAX_SLIPPAGE_INCREASE,
-                MAX_SLIPPAGE_INCREASE,
-                recipient,
-                hookData
-            )
-        );
+        Plan memory planner = Planner.init()
+            .add(
+                Actions.CL_MINT_POSITION,
+                abi.encode(
+                    key,
+                    params.tickLower,
+                    params.tickUpper,
+                    uint256(params.liquidityDelta),
+                    MAX_SLIPPAGE_INCREASE,
+                    MAX_SLIPPAGE_INCREASE,
+                    recipient,
+                    hookData
+                )
+            );
 
         uint256 tokenId = lpm.nextTokenId();
         bytes memory calls = planner.finalizeModifyLiquidityWithClose(key);

@@ -74,10 +74,7 @@ contract TickLensTest is TokenFixture, Test {
         positionManager.modifyPosition(
             poolKey0,
             ICLPoolManager.ModifyLiquidityParams({
-                tickLower: -300,
-                tickUpper: 300,
-                liquidityDelta: 10 ether,
-                salt: bytes32(0)
+                tickLower: -300, tickUpper: 300, liquidityDelta: 10 ether, salt: bytes32(0)
             }),
             new bytes(0)
         );
@@ -124,10 +121,7 @@ contract TickLensTest is TokenFixture, Test {
         positionManager.modifyPosition(
             poolKey0,
             ICLPoolManager.ModifyLiquidityParams({
-                tickLower: -260,
-                tickUpper: 260,
-                liquidityDelta: 9 ether,
-                salt: bytes32(0)
+                tickLower: -260, tickUpper: 260, liquidityDelta: 9 ether, salt: bytes32(0)
             }),
             new bytes(0)
         );
@@ -135,10 +129,7 @@ contract TickLensTest is TokenFixture, Test {
         positionManager.modifyPosition(
             poolKey0,
             ICLPoolManager.ModifyLiquidityParams({
-                tickLower: -360,
-                tickUpper: 360,
-                liquidityDelta: 11 ether,
-                salt: bytes32(0)
+                tickLower: -360, tickUpper: 360, liquidityDelta: 11 ether, salt: bytes32(0)
             }),
             new bytes(0)
         );
@@ -173,10 +164,7 @@ contract TickLensTest is TokenFixture, Test {
         positionManager.modifyPosition(
             poolKey2,
             ICLPoolManager.ModifyLiquidityParams({
-                tickLower: tickLower,
-                tickUpper: tickUpper,
-                liquidityDelta: 10 ether,
-                salt: bytes32(0)
+                tickLower: tickLower, tickUpper: tickUpper, liquidityDelta: 10 ether, salt: bytes32(0)
             }),
             new bytes(0)
         );
@@ -197,10 +185,7 @@ contract TickLensTest is TokenFixture, Test {
         positionManager.modifyPosition(
             poolKey1,
             ICLPoolManager.ModifyLiquidityParams({
-                tickLower: tickLower,
-                tickUpper: tickUpper,
-                liquidityDelta: 1 ether,
-                salt: bytes32(0)
+                tickLower: tickLower, tickUpper: tickUpper, liquidityDelta: 1 ether, salt: bytes32(0)
             }),
             new bytes(0)
         );
@@ -229,10 +214,7 @@ contract TickLensTest is TokenFixture, Test {
             positionManager.modifyPosition(
                 poolKey1,
                 ICLPoolManager.ModifyLiquidityParams({
-                    tickLower: tickLower,
-                    tickUpper: tickUpper,
-                    liquidityDelta: 1 ether,
-                    salt: bytes32(0)
+                    tickLower: tickLower, tickUpper: tickUpper, liquidityDelta: 1 ether, salt: bytes32(0)
                 }),
                 new bytes(0)
             );

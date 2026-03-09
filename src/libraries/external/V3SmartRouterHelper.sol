@@ -12,7 +12,6 @@ library V3SmartRouterHelper {
     /**
      * Stable *************************************************
      */
-
     // get the pool info in stable swap
     function getStableInfo(address stableSwapFactory, address input, address output, uint256 flag)
         internal

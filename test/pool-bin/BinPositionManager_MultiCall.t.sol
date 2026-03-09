@@ -32,12 +32,7 @@ import {BaseActionsRouter} from "../../src/base/BaseActionsRouter.sol";
 import {Permit2SignatureHelpers} from "../shared/Permit2SignatureHelpers.sol";
 import {IWETH9} from "../../src/interfaces/external/IWETH9.sol";
 
-contract BinPositionManager_MultiCallTest is
-    Permit2SignatureHelpers,
-    BinLiquidityHelper,
-    TokenFixture,
-    DeployPermit2
-{
+contract BinPositionManager_MultiCallTest is Permit2SignatureHelpers, BinLiquidityHelper, TokenFixture, DeployPermit2 {
     using BinPoolParametersHelper for bytes32;
     using SafeCast for uint256;
     using BinTokenLibrary for PoolId;

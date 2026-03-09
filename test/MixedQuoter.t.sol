@@ -846,10 +846,7 @@ contract MixedQuoterTest is
 
         (uint256 _amountOut, uint256 _gasEstimate) = clQuoter.quoteExactInputSingle(
             IQuoter.QuoteExactSingleParams({
-                poolKey: poolKey,
-                zeroForOne: true,
-                exactAmount: 1 ether,
-                hookData: ZERO_BYTES
+                poolKey: poolKey, zeroForOne: true, exactAmount: 1 ether, hookData: ZERO_BYTES
             })
         );
         assertEq(_amountOut, amountOut);
@@ -1036,10 +1033,7 @@ contract MixedQuoterTest is
 
         (uint256 _amountOut, uint256 _gasEstimate) = clQuoter.quoteExactInputSingle(
             IQuoter.QuoteExactSingleParams({
-                poolKey: poolKey,
-                zeroForOne: false,
-                exactAmount: 1 ether,
-                hookData: ZERO_BYTES
+                poolKey: poolKey, zeroForOne: false, exactAmount: 1 ether, hookData: ZERO_BYTES
             })
         );
         assertEq(_amountOut, amountOut);
@@ -1072,10 +1066,7 @@ contract MixedQuoterTest is
 
         (uint256 _amountOut, uint256 _gasEstimate) = clQuoter.quoteExactInputSingle(
             IQuoter.QuoteExactSingleParams({
-                poolKey: poolKeyWithWETH,
-                zeroForOne: true,
-                exactAmount: 1 ether,
-                hookData: ZERO_BYTES
+                poolKey: poolKeyWithWETH, zeroForOne: true, exactAmount: 1 ether, hookData: ZERO_BYTES
             })
         );
         assertEq(_amountOut, amountOut);
@@ -1102,10 +1093,7 @@ contract MixedQuoterTest is
 
         (uint256 _amountOut, uint256 _gasEstimate) = binQuoter.quoteExactInputSingle(
             IQuoter.QuoteExactSingleParams({
-                poolKey: binPoolKey,
-                zeroForOne: true,
-                exactAmount: 1 ether,
-                hookData: ZERO_BYTES
+                poolKey: binPoolKey, zeroForOne: true, exactAmount: 1 ether, hookData: ZERO_BYTES
             })
         );
         assertEq(_amountOut, amountOut);
@@ -1285,10 +1273,7 @@ contract MixedQuoterTest is
 
         (uint256 _amountOut, uint256 _gasEstimate) = binQuoter.quoteExactInputSingle(
             IQuoter.QuoteExactSingleParams({
-                poolKey: binPoolKey,
-                zeroForOne: false,
-                exactAmount: 1 ether,
-                hookData: ZERO_BYTES
+                poolKey: binPoolKey, zeroForOne: false, exactAmount: 1 ether, hookData: ZERO_BYTES
             })
         );
         assertEq(_amountOut, amountOut);

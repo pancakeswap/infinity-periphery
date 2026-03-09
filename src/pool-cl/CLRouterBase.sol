@@ -30,8 +30,8 @@ abstract contract CLRouterBase is ICLRouterBase, DeltaResolver {
                 _getFullCredit(params.zeroForOne ? params.poolKey.currency0 : params.poolKey.currency1).toUint128();
         }
         uint128 amountOut = _swapExactPrivate(
-            params.poolKey, params.zeroForOne, -int256(uint256(amountIn)), params.hookData
-        ).toUint128();
+                params.poolKey, params.zeroForOne, -int256(uint256(amountIn)), params.hookData
+            ).toUint128();
         if (amountOut < params.amountOutMinimum) {
             revert IInfinityRouter.TooLittleReceived(params.amountOutMinimum, amountOut);
         }
@@ -70,9 +70,10 @@ abstract contract CLRouterBase is ICLRouterBase, DeltaResolver {
             amountOut =
                 _getFullDebt(params.zeroForOne ? params.poolKey.currency1 : params.poolKey.currency0).toUint128();
         }
-        uint128 amountIn = (
-            -_swapExactPrivate(params.poolKey, params.zeroForOne, int256(uint256(amountOut)), params.hookData)
-        ).toUint128();
+        uint128 amountIn = (-_swapExactPrivate(
+                params.poolKey, params.zeroForOne, int256(uint256(amountOut)), params.hookData
+            ))
+        .toUint128();
         if (amountIn > params.amountInMaximum) {
             revert IInfinityRouter.TooMuchRequested(params.amountInMaximum, amountIn);
         }
@@ -95,11 +96,10 @@ abstract contract CLRouterBase is ICLRouterBase, DeltaResolver {
                 pathKey = params.path[i - 1];
                 (PoolKey memory poolKey, bool oneForZero) = pathKey.getPoolAndSwapDirection(currencyOut);
                 // The output delta will always be negative, except for when interacting with certain hook pools
-                amountIn = (
-                    uint256(
+                amountIn = (uint256(
                         -int256(_swapExactPrivate(poolKey, !oneForZero, int256(uint256(amountOut)), pathKey.hookData))
-                    )
-                ).toUint128();
+                    ))
+                .toUint128();
 
                 amountOut = amountIn;
                 currencyOut = pathKey.intermediateCurrency;
