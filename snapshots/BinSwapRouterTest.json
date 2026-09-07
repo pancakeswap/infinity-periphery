@@ -1,9 +1,9 @@
 {
-  "testExactInputSingle_DifferentRecipient": "136133",
-  "testExactInputSingle_EthPool_SwapEthForToken": "124501",
-  "testExactInputSingle_EthPool_SwapTokenForEth": "110210",
-  "testExactInput_MultiHopDifferentRecipient": "166964",
-  "testExactOutputSingle_DifferentRecipient": "140509",
-  "testExactOutput_MultiHopDifferentRecipient": "170820",
-  "testExactOutput_SingleHop": "142184"
+  "testExactInputSingle_DifferentRecipient": "136772",
+  "testExactInputSingle_EthPool_SwapEthForToken": "125140",
+  "testExactInputSingle_EthPool_SwapTokenForEth": "110849",
+  "testExactInput_MultiHopDifferentRecipient": "167950",
+  "testExactOutputSingle_DifferentRecipient": "141148",
+  "testExactOutput_MultiHopDifferentRecipient": "171806",
+  "testExactOutput_SingleHop": "142823"
 }

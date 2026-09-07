@@ -16,6 +16,7 @@ import {IAllowanceTransfer} from "permit2/src/interfaces/IAllowanceTransfer.sol"
 import {DeployPermit2} from "permit2/test/utils/DeployPermit2.sol";
 import {HookSavesDelta} from "./HookSavesDelta.sol";
 import {HookModifyLiquidities} from "./HookModifyLiquidities.sol";
+import {HookJitLiquidity} from "./HookJitLiquidity.sol";
 import {ERC721PermitHash} from "../../../src/pool-cl/libraries/ERC721PermitHash.sol";
 import {CLPoolManagerRouter} from "infinity-core/test/pool-cl/helpers/CLPoolManagerRouter.sol";
 import {ICLPositionDescriptor} from "../../../src/pool-cl/interfaces/ICLPositionDescriptor.sol";
@@ -37,6 +38,8 @@ contract PosmTestSetup is Test, Deployers, DeployPermit2, CLLiquidityOperations 
 
     HookModifyLiquidities hookModifyLiquidities;
 
+    HookJitLiquidity hookJitLiquidity;
+
     function deployAndApproveRouter(IVault vault, ICLPoolManager poolManager) public {
         router = new CLPoolManagerRouter(vault, poolManager);
         if (!currency0.isNative()) {
@@ -55,6 +58,15 @@ contract PosmTestSetup is Test, Deployers, DeployPermit2, CLLiquidityOperations 
 
         // set posm address since constructor args are not easily copied by vm.etch
         hookModifyLiquidities.setAddresses(lpm, permit2);
+    }
+
+    /// @dev deploys a test hook which mints a JIT position in beforeSwap and burns it in afterSwap,
+    /// both through IPositionManager.modifyLiquiditiesWithoutLock
+    function deployPosmHookJitLiquidity(IVault vault) public {
+        hookJitLiquidity = new HookJitLiquidity();
+
+        // set posm address since constructor args are not easily copied by vm.etch
+        hookJitLiquidity.setAddresses(vault, lpm, permit2);
     }
 
     function deployAndApprovePosm(IVault vault, ICLPoolManager poolManager) public {

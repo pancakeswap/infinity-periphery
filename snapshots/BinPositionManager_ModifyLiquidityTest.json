@@ -1,7 +1,7 @@
 {
-  "test_addLiquidity_OutsideActiveId": "294794",
-  "test_addLiquidity_SingleBin": "532872",
-  "test_addLiquidity_ThreeBins": "907388",
-  "test_decreaseLiquidity_threeBins": "184859",
-  "test_decreaseLiquidity_threeBins_half": "203748"
+  "test_addLiquidity_OutsideActiveId": "295325",
+  "test_addLiquidity_SingleBin": "533632",
+  "test_addLiquidity_ThreeBins": "908128",
+  "test_decreaseLiquidity_threeBins": "185265",
+  "test_decreaseLiquidity_threeBins_half": "204256"
 }

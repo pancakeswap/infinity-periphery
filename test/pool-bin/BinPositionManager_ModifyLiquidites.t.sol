@@ -36,6 +36,7 @@ import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {IWETH9} from "../../src/interfaces/external/IWETH9.sol";
 import {WETH} from "solmate/src/tokens/WETH.sol";
 import {BinPool} from "infinity-core/src/pool-bin/libraries/BinPool.sol";
+import {PriceHelper} from "infinity-core/src/pool-bin/libraries/PriceHelper.sol";
 import {BalanceDelta, BalanceDeltaLibrary} from "infinity-core/src/types/BalanceDelta.sol";
 import {CurrencySettlement} from "infinity-core/test/helpers/CurrencySettlement.sol";
 import {MockFOT} from "../mocks/MockFeeOnTransfer.sol";
@@ -71,6 +72,10 @@ contract BinPositionManager_ModifyLiquidityTest is BinLiquidityHelper, TokenFixt
     bytes32 poolParam;
     address alice = makeAddr("alice");
     uint24 activeId = 2 ** 23; // where token0 and token1 price is the same
+
+    /// @dev At binStep 10 this bin's price is exactly BinPool.MINIMUM_SHARE, so 1 wei of token0 mints
+    /// exactly the minimum share on a fresh bin and leaves the minter with nothing
+    uint24 constant MINIMUM_SHARE_BIN_ID = 8306753;
 
     function setUp() public {
         fotToken = new MockFOT();
@@ -470,6 +475,43 @@ contract BinPositionManager_ModifyLiquidityTest is BinLiquidityHelper, TokenFixt
         // re-add existing id, gas should be way cheaper
         binPm.modifyLiquidities(payload, _deadline);
         vm.snapshotGasLastCall("test_addLiquidity_OutsideActiveId");
+    }
+
+    /// @dev A first mint that locks up MINIMUM_SHARE but leaves the minter with 0 share is rejected --
+    /// it would otherwise leave the bin with reserves and a tree entry that no position owns.
+    function test_addLiquidity_firstMintWithoutUserShare() public {
+        // a pool whose bins are priced low enough for a dust amount to mint exactly MINIMUM_SHARE
+        uint24 dustActiveId = MINIMUM_SHARE_BIN_ID - 1;
+        PoolKey memory dustKey = PoolKey({
+            currency0: currency0,
+            currency1: currency1,
+            hooks: IHooks(address(0)),
+            poolManager: IBinPoolManager(address(poolManager)),
+            fee: uint24(500), // a fee not used by the other pools, so this is a distinct pool
+            parameters: poolParam.setBinStep(10)
+        });
+        binPm.initializePool(dustKey, dustActiveId);
+        assertEq(PriceHelper.getPriceFromId(MINIMUM_SHARE_BIN_ID, 10), BinPool.MINIMUM_SHARE);
+
+        uint24[] memory binIds = new uint24[](1);
+        binIds[0] = MINIMUM_SHARE_BIN_ID;
+
+        // 1 wei of token0 mints exactly MINIMUM_SHARE, all of which is locked up
+        IBinPositionManager.BinAddLiquidityParams memory param =
+            _getAddParams(dustKey, binIds, 1, 0, dustActiveId, address(this));
+        Plan memory planner = Planner.init().add(Actions.BIN_ADD_LIQUIDITY, abi.encode(param));
+        bytes memory payload = planner.finalizeModifyLiquidityWithClose(dustKey);
+
+        vm.expectRevert(abi.encodeWithSelector(BinPool.BinPool__ZeroShares.selector, MINIMUM_SHARE_BIN_ID));
+        binPm.modifyLiquidities(payload, _deadline);
+
+        // 2 wei mints twice the minimum, so the minter still owns a share of the bin afterwards
+        param = _getAddParams(dustKey, binIds, 2, 0, dustActiveId, address(this));
+        planner = Planner.init().add(Actions.BIN_ADD_LIQUIDITY, abi.encode(param));
+        binPm.modifyLiquidities(planner.finalizeModifyLiquidityWithClose(dustKey), _deadline);
+
+        uint256 tokenId = calculateTokenId(dustKey.toId(), MINIMUM_SHARE_BIN_ID);
+        assertEq(binPm.balanceOf(address(this), tokenId), BinPool.MINIMUM_SHARE);
     }
 
     function test_addLiquidity_HookData() public {
