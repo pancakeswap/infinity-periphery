@@ -5,7 +5,7 @@
   "weth": "0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73",
   "vault": "0x4F922d5B15e6691e0469663E4F5C4177f23c5FaF",
   "clPoolManager": "0xeE04c68742e6Bf434bE8039580D2e89BBE55bc6f",
-  "binPoolManager": "0x6262B1041596fCeD3Ea7D87C135B0b602Ed05013",
+  "binPoolManager": "",
   "clPositionDescriptorTokenUri": "https://nft.pancakeswap.com/v4/4663/",
   "clPositionDescriptor": "0x8604c42B208E76Fd0108DF32A97cce58E40dA4A0",
   "clPositionManagerUnsubscribeGasLimit": 300000,
