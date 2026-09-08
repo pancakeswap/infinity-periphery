@@ -15,7 +15,7 @@
   "binQuoter": "",
   "factoryV3": "0x0BFbCF9fa4f9C56B0F40a671Ad40E0805A091865",
   "factoryV2": "0x02a84c1b3BBD7401a5f7fa98a384EBC70bB5749E",
-  "factoryStable": "",
-  "mixedQuoter": "",
+  "factoryStable": "0xD6b5036d85C3E72d24C73eDD54eb9DCB2698C692",
+  "mixedQuoter": "0xB05b2Ba5a00BEb4DCa5A91835D6D0cedFc4B4ABa",
   "clTickLens": "0x8a9BbC3a3F91D9eEc8aAb9f98DB951D321A11255"
 }
