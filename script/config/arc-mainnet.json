@@ -1,0 +1,21 @@
+{
+  "create3Factory": "0x38Ab3f2CE00973A51d3A2A04d634C9bcbf20e4e1",
+  "owner": "0x7e283FDEe79d0D06973316e74EaEf58c2854f6AA",
+  "permit2": "0x31c2F6fcFf4F8759b3Bd5Bf0e1084A055615c768",
+  "weth": "0x6fa3fB686637CB329545049e3f5f3330a23d9D42",
+  "vault": "0x238a358808379702088667322f80aC48bAd5e6c4",
+  "clPoolManager": "0xa0FfB9c1CE1Fe56963B0321B32E7A0302114058b",
+  "binPoolManager": "",
+  "clPositionDescriptorTokenUri": "https://nft.pancakeswap.com/v4/5042/",
+  "clPositionDescriptor": "0xF6198656CDD856073f82d10661b018A1a9d84E84",
+  "clPositionManagerUnsubscribeGasLimit": 300000,
+  "clPositionManager": "0x55f4c8abA71A1e923edC303eb4fEfF14608cC226",
+  "binPositionManager": "",
+  "clQuoter": "0xd0737C9762912dD34c3271197E362Aa736Df0926",
+  "binQuoter": "",
+  "factoryV3": "0x0BFbCF9fa4f9C56B0F40a671Ad40E0805A091865",
+  "factoryV2": "0x02a84c1b3BBD7401a5f7fa98a384EBC70bB5749E",
+  "factoryStable": "0x6fa3fB686637CB329545049e3f5f3330a23d9D42",
+  "mixedQuoter": "0x2dCbF7B985c8C5C931818e4E107bAe8aaC8dAB7C",
+  "clTickLens": "0x8BcF30285413F25032fb983C2bF4deFe29a33f3a"
+}
